@@ -63,7 +63,7 @@ export const DecisionPage: React.FC<Props> = ({
         className="page-content"
         style={{
           padding: "8px 10px",
-          paddingBottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 90px)"
+          paddingBottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 16px) + 120px)"
         }}
       >
         {/* Compact Metric Strip */}

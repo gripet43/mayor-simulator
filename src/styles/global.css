@@ -197,12 +197,14 @@ html, body {
 
 .modal-sheet {
   width: 100%;
-  max-height: 88%;
+  max-width: 480px;
+  max-height: 92vh;
   background-color: var(--bg-main);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  padding: 16px;
+  padding: 16px 16px calc(36px + env(safe-area-inset-bottom, 16px)) 16px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow-modal);
   display: flex;
   flex-direction: column;

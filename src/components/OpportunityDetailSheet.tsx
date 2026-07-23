@@ -284,7 +284,7 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
           </div>
         )}
 
-        <button className="btn btn-primary" style={{ width: "100%" }} onClick={onClose}>
+        <button className="btn btn-primary" style={{ width: "100%", height: "42px", fontSize: "14px", marginBottom: "16px" }} onClick={onClose}>
           确定
         </button>
       </div>
