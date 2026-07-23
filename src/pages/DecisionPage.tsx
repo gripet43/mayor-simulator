@@ -264,7 +264,7 @@ export const DecisionPage: React.FC<Props> = ({
           }}
           onClick={onExecuteResolution}
         >
-          <span>{draft ? `提交本季方案 (开启第 ${state.quarter} 季结算)` : `未选草案：直接暂缓周转 (结算第 ${state.quarter} 季)`}</span>
+          <span>{draft ? "提交本季方案" : "暂缓周转并提交"}</span>
           <ArrowRight size={16} />
         </button>
       </div>

@@ -11,21 +11,6 @@ interface Props {
 export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNextQuarter }) => {
   const [phase, setPhase] = useState<"signing" | "simulating" | "report">("signing");
 
-  useEffect(() => {
-    const timer1 = setTimeout(() => {
-      setPhase("simulating");
-    }, 850);
-
-    const timer2 = setTimeout(() => {
-      setPhase("report");
-    }, 1750);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
-
   const f = summary.finance;
   const m = summary.metricChanges;
   const dl = f.debtLedger;
@@ -36,7 +21,7 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
 
   if (phase === "signing") {
     return (
-      <div className="modal-overlay" onClick={() => setPhase("report")}>
+      <div className="modal-overlay">
         <div className="modal-center" style={{ maxWidth: "400px", textAlign: "center", backgroundColor: "#FFFDF6", border: "2px solid #B7352C", padding: "24px 18px", boxShadow: "0 8px 32px rgba(183,53,44,0.2)" }}>
           <div style={{ fontSize: "11px", color: "#B7352C", fontWeight: "bold", letterSpacing: "2px", marginBottom: "4px" }}>
             🏛️ 临州市人民政府 · 行政批复
@@ -55,9 +40,24 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             </span>
           </div>
 
-          <div style={{ fontSize: "11px", color: "#8E8E93", marginTop: "16px" }}>
-            ✍️ 市长印鉴已签发 · 正在推演城市运行... (点击跳过)
-          </div>
+          <button
+            className="btn"
+            style={{
+              width: "100%",
+              height: "40px",
+              marginTop: "16px",
+              backgroundColor: "#B7352C",
+              color: "#FFF",
+              fontWeight: "bold",
+              fontSize: "14px",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+            onClick={() => setPhase("simulating")}
+          >
+            下一步：划拨资金与城市推演 →
+          </button>
         </div>
       </div>
     );
@@ -65,31 +65,45 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
 
   if (phase === "simulating") {
     return (
-      <div className="modal-overlay" onClick={() => setPhase("report")}>
+      <div className="modal-overlay">
         <div className="modal-center" style={{ maxWidth: "400px", textAlign: "center", padding: "24px 18px" }}>
           <div style={{ fontSize: "15px", fontWeight: "bold", marginBottom: "14px", fontFamily: "var(--font-serif)" }}>
             ⚙️ 正在推演第 {summary.quarter} 季度城市运转...
           </div>
 
-          <div style={{ fontSize: "12px", color: "var(--text-sub)", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "18px", textAlign: "left" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Coins size={14} color="#B98425" /> 划拨工程分期首付款及招投标预算...
+          <div style={{ fontSize: "12px", color: "var(--text-sub)", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px", textAlign: "left" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Coins size={15} color="#B98425" /> 划拨工程分期首付款及招投标预算...
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <TrendingUp size={14} color="#2E7D32" /> 结算经常性税收、营运收益与债务利息...
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <TrendingUp size={15} color="#2E7D32" /> 结算经常性税收、营运收益与债务利息...
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Newspaper size={14} color="#0277BD" /> 编印《临州纪事》本季头条专稿...
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Newspaper size={15} color="#0277BD" /> 编印《临州纪事》本季头条专稿...
             </div>
           </div>
 
-          <div style={{ height: "6px", backgroundColor: "#E5E5EA", borderRadius: "3px", overflow: "hidden" }}>
-            <div style={{ width: "92%", height: "100%", backgroundColor: "#B98425", borderRadius: "3px", transition: "width 0.8s ease-in-out" }} />
+          <div style={{ height: "6px", backgroundColor: "#E5E5EA", borderRadius: "3px", overflow: "hidden", marginBottom: "16px" }}>
+            <div style={{ width: "100%", height: "100%", backgroundColor: "#B98425", borderRadius: "3px" }} />
           </div>
 
-          <div style={{ fontSize: "11px", color: "#8E8E93", marginTop: "14px" }}>
-            点击任意位置快速查看政务公报 →
-          </div>
+          <button
+            className="btn"
+            style={{
+              width: "100%",
+              height: "40px",
+              backgroundColor: "#B98425",
+              color: "#FFF",
+              fontWeight: "bold",
+              fontSize: "14px",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer"
+            }}
+            onClick={() => setPhase("report")}
+          >
+            下一步：查看本季政务公报 →
+          </button>
         </div>
       </div>
     );
@@ -293,7 +307,7 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             onNextQuarter();
           }}
         >
-          {isLastQuarter ? "进入任期答卷 →" : "进入下一季度 →"}
+          {isLastQuarter ? "进入任期答卷 →" : `开启第 ${summary.quarter + 1} 季度施政 →`}
         </button>
       </div>
     </div>

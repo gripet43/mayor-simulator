@@ -71,6 +71,9 @@ export function calculateGambleSuccessRate(
 }
 
 export function rollQuarterEvent(state: GameState, prng: PRNG): ActiveEvent | null {
+  // 第 1 季度不触发随机突发事件，确保平稳开局
+  if (state.quarter <= 1) return null;
+
   const prob = calculateEventTriggerProbability(state);
   const triggered = prng.rollChance(prob);
   if (!triggered) return null;
