@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gripet43.github.io/mayor-simulator/sitemap.xml
