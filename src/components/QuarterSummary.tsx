@@ -206,7 +206,14 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
         <button
           className="btn btn-primary"
           style={{ width: "100%", height: "42px", fontSize: "14px" }}
-          onClick={onNextQuarter}
+          onClick={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            const pageEls = document.querySelectorAll(".page-content, .app-container, div[style*='overflow']");
+            pageEls.forEach((el) => {
+              el.scrollTop = 0;
+            });
+            onNextQuarter();
+          }}
         >
           {isLastQuarter ? "进入任期答卷 →" : "进入下一季度 →"}
         </button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GameState, PolicyDefinition } from "../types/game";
 import { HeaderStatus } from "../components/HeaderStatus";
 import { MetricGrid } from "../components/MetricGrid";
@@ -27,6 +27,16 @@ export const DecisionPage: React.FC<Props> = ({
   onOpenHelp
 }) => {
   const [showDebtSheet, setShowDebtSheet] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const pageEls = document.querySelectorAll(".page-content, .app-container, div[style*='overflow']");
+    pageEls.forEach((el) => {
+      el.scrollTop = 0;
+    });
+  }, [state.quarter]);
 
   const candidateDefs = state.candidatePolicies
     .map((id) => POLICIES_DATA.find((p) => p.id === id))
