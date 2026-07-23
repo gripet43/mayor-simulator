@@ -223,8 +223,8 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
                 statusText = "已完成";
                 badgeClass = "badge-green";
               } else if (activeProj) {
-                const pct = Math.round(((activeProj.stageIndex + 1) / activeProj.totalDuration) * 100);
-                statusText = activeProj.status === "halted" ? "停工中" : `在建 ${pct}%`;
+                const remQuarters = Math.max(1, activeProj.totalDuration - activeProj.stageIndex);
+                statusText = activeProj.status === "halted" ? "停工中" : `施工中(还需${remQuarters}季)`;
                 badgeClass = activeProj.status === "halted" ? "badge-red" : "badge-yellow";
               }
 

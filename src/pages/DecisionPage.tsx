@@ -112,12 +112,13 @@ export const DecisionPage: React.FC<Props> = ({
               <HardHat size={12} /> 在建项目 ({state.activeProjects.length}/3)
             </div>
             {state.activeProjects.map((p) => {
-              const progressPct = Math.round(((p.stageIndex + 1) / p.totalDuration) * 100);
+              const remQuarters = Math.max(1, p.totalDuration - p.stageIndex);
+              const progressPct = Math.round((p.stageIndex / p.totalDuration) * 100);
               return (
                 <div key={p.id} style={{ display: "flex", justifyContent: "space-between", margin: "1px 0" }}>
-                  <span>• <strong>{p.name}</strong> ({p.status === "halted" ? "⚠️ 因负债红线停工" : `${progressPct}%`})</span>
+                  <span>• <strong>{p.name}</strong> ({p.status === "halted" ? "⚠️ 因负债红线停工" : `施工中 ${progressPct}%`})</span>
                   <span className={`badge ${p.status === "halted" ? "badge-red" : "badge-yellow"}`} style={{ fontSize: "9px", padding: "1px 3px" }}>
-                    {p.status === "halted" ? "待资金恢复" : `还需 ${p.remainingDuration} 季`}
+                    {p.status === "halted" ? "待资金恢复" : `还需 ${remQuarters} 季`}
                   </span>
                 </div>
               );

@@ -300,7 +300,7 @@ export function approvePolicyAction(
       policyId: policy.id,
       name: policy.name,
       quarterStarted: nextState.quarter,
-      remainingDuration: duration - 1,
+      remainingDuration: duration,
       totalDuration: duration,
       stageIndex: 0,
       totalCost: cost,
@@ -483,9 +483,10 @@ function advanceQuarterFlow(
 
     updatedProj.status = "in_progress";
     updatedProj.stageIndex = nextStageIndex;
+    updatedProj.remainingDuration = Math.max(0, proj.totalDuration - nextStageIndex);
 
-    const oldProgress = Math.round(((proj.stageIndex + 1) / proj.totalDuration) * 100);
-    const newProgress = Math.round(((nextStageIndex + 1) / proj.totalDuration) * 100);
+    const oldProgress = Math.round((proj.stageIndex / proj.totalDuration) * 100);
+    const newProgress = Math.round((nextStageIndex / proj.totalDuration) * 100);
 
     const def = POLICIES_DATA.find((p) => p.id === proj.policyId);
 
