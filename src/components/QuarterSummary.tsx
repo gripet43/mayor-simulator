@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { QuarterSummaryData } from "../types/game";
-import { Coins, CheckCircle2, TrendingUp, Newspaper, BookOpen, HardHat, Zap } from "lucide-react";
+import { Coins, CheckCircle2, TrendingUp, Newspaper, BookOpen, HardHat, Zap, FileCheck } from "lucide-react";
 
 interface Props {
   summary: QuarterSummaryData;
@@ -9,6 +9,23 @@ interface Props {
 }
 
 export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNextQuarter }) => {
+  const [phase, setPhase] = useState<"signing" | "simulating" | "report">("signing");
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => {
+      setPhase("simulating");
+    }, 850);
+
+    const timer2 = setTimeout(() => {
+      setPhase("report");
+    }, 1750);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
   const f = summary.finance;
   const m = summary.metricChanges;
   const dl = f.debtLedger;
@@ -16,6 +33,67 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   const totalIncome = Math.round((f.taxIncome + (f.operatingIncomeTotal ?? 0)) * 10) / 10;
   const totalExpense = Math.round((f.baseExpense + f.maintenanceExpense + (f.opportunityOperatingCosts ?? 0) + f.debtInterest) * 10) / 10;
   const netBalance = Math.round((totalIncome - totalExpense) * 10) / 10;
+
+  if (phase === "signing") {
+    return (
+      <div className="modal-overlay" onClick={() => setPhase("report")}>
+        <div className="modal-center" style={{ maxWidth: "400px", textAlign: "center", backgroundColor: "#FFFDF6", border: "2px solid #B7352C", padding: "24px 18px", boxShadow: "0 8px 32px rgba(183,53,44,0.2)" }}>
+          <div style={{ fontSize: "11px", color: "#B7352C", fontWeight: "bold", letterSpacing: "2px", marginBottom: "4px" }}>
+            🏛️ 临州市人民政府 · 行政批复
+          </div>
+          <div style={{ fontSize: "11px", color: "#8E8E93", marginBottom: "14px" }}>
+            临政发〔2026〕第 {summary.quarter < 10 ? `0${summary.quarter}` : summary.quarter} 号
+          </div>
+
+          <h3 style={{ fontSize: "16px", color: "#1C1C1E", marginBottom: "16px", lineHeight: "1.5", fontFamily: "var(--font-serif)" }}>
+            《关于第 {summary.quarter} 季度施政草案落地与财政拨付的决定》
+          </h3>
+
+          <div style={{ margin: "18px 0" }}>
+            <span className="stamp-seal">
+              ★ 准予立项盖章 ★
+            </span>
+          </div>
+
+          <div style={{ fontSize: "11px", color: "#8E8E93", marginTop: "16px" }}>
+            ✍️ 市长印鉴已签发 · 正在推演城市运行... (点击跳过)
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === "simulating") {
+    return (
+      <div className="modal-overlay" onClick={() => setPhase("report")}>
+        <div className="modal-center" style={{ maxWidth: "400px", textAlign: "center", padding: "24px 18px" }}>
+          <div style={{ fontSize: "15px", fontWeight: "bold", marginBottom: "14px", fontFamily: "var(--font-serif)" }}>
+            ⚙️ 正在推演第 {summary.quarter} 季度城市运转...
+          </div>
+
+          <div style={{ fontSize: "12px", color: "var(--text-sub)", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "18px", textAlign: "left" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Coins size={14} color="#B98425" /> 划拨工程分期首付款及招投标预算...
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <TrendingUp size={14} color="#2E7D32" /> 结算经常性税收、营运收益与债务利息...
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Newspaper size={14} color="#0277BD" /> 编印《临州纪事》本季头条专稿...
+            </div>
+          </div>
+
+          <div style={{ height: "6px", backgroundColor: "#E5E5EA", borderRadius: "3px", overflow: "hidden" }}>
+            <div style={{ width: "92%", height: "100%", backgroundColor: "#B98425", borderRadius: "3px", transition: "width 0.8s ease-in-out" }} />
+          </div>
+
+          <div style={{ fontSize: "11px", color: "#8E8E93", marginTop: "14px" }}>
+            点击任意位置快速查看政务公报 →
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-overlay">
