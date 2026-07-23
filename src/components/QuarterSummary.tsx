@@ -106,20 +106,23 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
 
           <button
             className="btn"
+            disabled={revealedStepCount < 3}
             style={{
               width: "100%",
               height: "40px",
-              backgroundColor: "#B98425",
+              backgroundColor: revealedStepCount >= 3 ? "#B98425" : "#A1A1AA",
               color: "#FFF",
               fontWeight: "bold",
               fontSize: "14px",
               border: "none",
               borderRadius: "6px",
-              cursor: "pointer"
+              cursor: revealedStepCount >= 3 ? "pointer" : "not-allowed",
+              opacity: revealedStepCount >= 3 ? 1 : 0.65,
+              transition: "all 0.3s ease"
             }}
-            onClick={() => setPhase("report")}
+            onClick={revealedStepCount >= 3 ? () => setPhase("report") : undefined}
           >
-            下一步：查看本季政务公报 →
+            {revealedStepCount >= 3 ? "下一步：查看本季政务公报 →" : "⚙️ 正在推演中..."}
           </button>
         </div>
       </div>
