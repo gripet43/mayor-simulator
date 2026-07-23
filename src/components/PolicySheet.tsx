@@ -166,24 +166,41 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
             无法拟定：执行后债务将达到 {postDebt} 亿，超过财政托管线
           </button>
         ) : (
-          <button
-            className={`btn ${isCurrentDraft && draft.intensity === selectedIntensity ? "btn-secondary" : "btn-primary"}`}
-            style={{
-              width: "100%",
-              height: "46px",
-              fontSize: "14px",
-              backgroundColor: isCurrentDraft && draft.intensity === selectedIntensity ? "#2E7D32" : undefined,
-              color: isCurrentDraft && draft.intensity === selectedIntensity ? "#FFFFFF" : undefined
-            }}
-            onClick={() => {
-              onConfirmApprove(policy.id, selectedIntensity);
-              onClose();
-            }}
-          >
-            {isCurrentDraft && draft.intensity === selectedIntensity
-              ? `已拟定为本季草案 (${config.label} · 首期 ${firstPay} 亿) ✓`
-              : `拟定为本季草案 (${config.label} · 首期 ${firstPay} 亿) →`}
-          </button>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <button
+              className={`btn ${isCurrentDraft && draft.intensity === selectedIntensity ? "btn-secondary" : "btn-primary"}`}
+              style={{
+                width: "100%",
+                height: "46px",
+                fontSize: "14px",
+                backgroundColor: isCurrentDraft && draft.intensity === selectedIntensity ? "#2E7D32" : undefined,
+                color: isCurrentDraft && draft.intensity === selectedIntensity ? "#FFFFFF" : undefined
+              }}
+              onClick={() => {
+                onConfirmApprove(policy.id, selectedIntensity);
+                onClose();
+              }}
+            >
+              {isCurrentDraft
+                ? draft.intensity === selectedIntensity
+                  ? `已拟定为本季草案 (${config.label} · 首期 ${firstPay} 亿) ✓`
+                  : `更新为当前运行模式 (${config.label} · 首期 ${firstPay} 亿) →`
+                : `加入本季草案 (${config.label} · 首期 ${firstPay} 亿) →`}
+            </button>
+
+            {isCurrentDraft && (
+              <button
+                className="btn btn-secondary"
+                style={{ width: "100%", height: "36px", fontSize: "12px", color: "#C62828", borderColor: "#FFCDD2" }}
+                onClick={() => {
+                  onConfirmApprove("", "full");
+                  onClose();
+                }}
+              >
+                从本季草案中撤回此政策 ✕
+              </button>
+            )}
+          </div>
         )}
 
         {/* Secondary Confirmation Modal */}

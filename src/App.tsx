@@ -66,7 +66,11 @@ export const App: React.FC = () => {
   };
 
   const handleConfirmApprovePolicy = (policyId: string, intensity: Intensity) => {
-    setGameState(setDraftAction(gameState, { type: "policy", policyId, intensity }));
+    if (!policyId) {
+      setGameState(setDraftAction(gameState, undefined));
+    } else {
+      setGameState(setDraftAction(gameState, { type: "policy", policyId, intensity }));
+    }
     setSelectedPolicy(null);
   };
 

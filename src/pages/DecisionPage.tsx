@@ -131,7 +131,7 @@ export const DecisionPage: React.FC<Props> = ({
             </div>
           ) : (
             candidateDefs.map((policy) => (
-              <PolicyCard key={policy.id} policy={policy} state={state} onSelect={handleSelectPolicyAsDraft} />
+              <PolicyCard key={policy.id} policy={policy} state={state} onSelect={onSelectPolicyCard} />
             ))
           )}
         </div>
@@ -210,15 +210,23 @@ export const DecisionPage: React.FC<Props> = ({
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
           <div style={{ fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}>
             <CheckCircle2 size={13} color={draft ? "#2E7D32" : "#8E8E93"} />
-            <span style={{ fontWeight: draft ? "bold" : "normal", color: draft ? "#1C1C1E" : "#8E8E93" }}>
-              {draftPolicy
-                ? `本季拟定: 【${draftPolicy.name}】(${draft?.intensity === "pilot" ? "试点投入" : draft?.intensity === "intensive" ? "攻坚投入" : "全市推行"})`
-                : draft?.type === "repay"
-                ? "本季拟定: 【优先偿还债务】"
-                : draft?.type === "skip"
-                ? "本季拟定: 【暂缓投资，周转财政】"
-                : "请添加要执行的草案"}
-            </span>
+            {draftPolicy ? (
+              <span
+                onClick={() => onSelectPolicyCard(draftPolicy)}
+                style={{ fontWeight: "bold", color: "#1C1C1E", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "2px" }}
+                title="点击调整运行模式与投入强度"
+              >
+                本季拟定: 【{draftPolicy.name}】({draft?.intensity === "pilot" ? "试点" : draft?.intensity === "intensive" ? "攻坚" : "全市推行"}) ⚙️
+              </span>
+            ) : (
+              <span style={{ fontWeight: draft ? "bold" : "normal", color: draft ? "#1C1C1E" : "#8E8E93" }}>
+                {draft?.type === "repay"
+                  ? "本季拟定: 【优先偿还债务】"
+                  : draft?.type === "skip"
+                  ? "本季拟定: 【暂缓投资，周转财政】"
+                  : "请添加要执行的草案"}
+              </span>
+            )}
           </div>
 
           {draft && (
