@@ -54,15 +54,40 @@ export const DebtManagementSheet: React.FC<Props> = ({ state, onClose, onUpdateS
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+        {/* Drag Handle Bar */}
+        <div style={{
+          width: "36px",
+          height: "4px",
+          backgroundColor: "#D1D1D6",
+          borderRadius: "2px",
+          margin: "0 auto 10px auto",
+          flexShrink: 0
+        }} />
+
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
           <div>
-            <span className="badge badge-yellow" style={{ marginBottom: "2px" }}>城市债务管理与偿还</span>
-            <h2 style={{ fontSize: "18px" }}>城市债务账本</h2>
+            <span className="badge badge-yellow" style={{ marginBottom: "2px", display: "inline-block" }}>城市债务管理与偿还</span>
+            <h2 style={{ fontSize: "18px", lineHeight: "1.3" }}>城市债务账本</h2>
           </div>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "var(--text-sub)" }}
+            style={{
+              background: "#E5E5EA",
+              border: "none",
+              borderRadius: "50%",
+              width: "30px",
+              height: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              color: "#636366",
+              marginLeft: "12px",
+              flexShrink: 0
+            }}
           >
             ✕
           </button>

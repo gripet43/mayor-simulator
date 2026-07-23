@@ -51,17 +51,42 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+        {/* Drag Handle Bar */}
+        <div style={{
+          width: "36px",
+          height: "4px",
+          backgroundColor: "#D1D1D6",
+          borderRadius: "2px",
+          margin: "0 auto 10px auto",
+          flexShrink: 0
+        }} />
+
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
           <div>
-            <h2 style={{ fontSize: "18px" }}>{policy.name}</h2>
+            <h2 style={{ fontSize: "18px", lineHeight: "1.3" }}>{policy.name}</h2>
             <span style={{ fontSize: "12px", color: "var(--text-sub)" }}>
               在建工程: {state.activeProjects.length} / 3
             </span>
           </div>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "var(--text-sub)" }}
+            style={{
+              background: "#E5E5EA",
+              border: "none",
+              borderRadius: "50%",
+              width: "30px",
+              height: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              color: "#636366",
+              marginLeft: "12px",
+              flexShrink: 0
+            }}
           >
             ✕
           </button>
