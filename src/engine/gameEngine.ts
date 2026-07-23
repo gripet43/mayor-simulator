@@ -571,12 +571,17 @@ function advanceQuarterFlow(
 
   // 4. 结算当前活动重大机遇 (在季度末到达 settleQuarter 时)
   let opportunityNotice = "";
+  let opportunityGrantIncome = 0;
   const activeOppId = nextState.activeMajorOpportunityId;
   if (activeOppId) {
     const oppState = nextState.opportunityStates[activeOppId];
     if (oppState && oppState.status !== "settled" && nextState.quarter === oppState.settleQuarter) {
       const oppRes = resolveMajorOpportunitySettlement(nextState, activeOppId);
       nextState = oppRes.nextState;
+
+      if (oppRes.resultModalData?.grant) {
+        opportunityGrantIncome = oppRes.resultModalData.grant;
+      }
 
       const oppDef = MAJOR_OPPORTUNITIES_DATA[activeOppId];
       const tierLabel = oppRes.resultModalData?.resultTier === "super_success"
@@ -645,12 +650,13 @@ function advanceQuarterFlow(
     taxIncome: taxInfo.taxIncome,
     taxModifier: taxInfo.taxModifier,
     operatingIncomeTotal,
+    opportunityGrantIncome,
     baseExpense,
     maintenanceExpense,
     opportunityOperatingCosts,
     maintenanceDiscount,
     debtInterest,
-    recurringBalance: Math.round((totalQuarterRevenue - necessaryExpense) * 10) / 10,
+    recurringBalance: Math.round((totalQuarterRevenue + opportunityGrantIncome - necessaryExpense) * 10) / 10,
     policySpending: policySpendingThisQuarter,
     eventSpending: 0,
     debtAdded: debtAddedFromDeficit,

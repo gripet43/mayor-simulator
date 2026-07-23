@@ -28,7 +28,8 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   const m = summary.metricChanges;
   const dl = f.debtLedger;
 
-  const totalIncome = Math.round((f.taxIncome + (f.operatingIncomeTotal ?? 0)) * 10) / 10;
+  const grantIncome = f.opportunityGrantIncome ?? 0;
+  const totalIncome = Math.round((f.taxIncome + (f.operatingIncomeTotal ?? 0) + grantIncome) * 10) / 10;
   const totalExpense = Math.round((f.baseExpense + f.maintenanceExpense + (f.opportunityOperatingCosts ?? 0) + f.debtInterest) * 10) / 10;
   const netBalance = Math.round((totalIncome - totalExpense) * 10) / 10;
 
@@ -168,6 +169,13 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "var(--color-green)" }}>
               <span>已完工项目运营收益:</span>
               <span>+{f.operatingIncomeTotal} 亿</span>
+            </div>
+          )}
+
+          {grantIncome > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "#2E7D32", fontWeight: "bold" }}>
+              <span>🏛️ 城市机遇专项上级扶持金:</span>
+              <span>+{grantIncome} 亿</span>
             </div>
           )}
 

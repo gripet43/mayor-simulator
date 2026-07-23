@@ -219,6 +219,7 @@ export interface QuarterFinanceBreakdown {
   taxIncome: number;
   taxModifier: number;
   operatingIncomeTotal: number;
+  opportunityGrantIncome?: number; // 城市机遇扶持资金到账
   baseExpense: number;
   maintenanceExpense: number;
   opportunityOperatingCosts: number; // 机遇永久运营费
