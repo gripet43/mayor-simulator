@@ -172,6 +172,7 @@ export function createNewGame(seed?: number): GameState {
   };
 
   initialState.candidatePolicies = generateQuarterlyCandidates(initialState, prng);
+  initialState.currentEvent = rollQuarterEvent(initialState, prng) ?? undefined;
 
   return initialState;
 }
@@ -679,7 +680,6 @@ function advanceQuarterFlow(
   };
 
   nextState.lastQuarterSummary = summary;
-  nextState.currentEvent = activeEvent ?? undefined;
 
   return { nextState, summary };
 }
@@ -797,6 +797,9 @@ export function completeQuarterStep(state: GameState): GameState {
     nextState.quartersWithoutRelevantPolicyMap = currentPityMap;
     nextState.quartersWithoutRelevantPolicy = currentPityMap[currentActiveId];
   }
+
+  // Roll Quarter Event for the new quarter's decision phase
+  nextState.currentEvent = rollQuarterEvent(nextState, prng) ?? undefined;
 
   return nextState;
 }
