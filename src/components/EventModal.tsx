@@ -151,7 +151,7 @@ export const EventModal: React.FC<Props> = ({ activeEvent, state, onResolve }) =
                 }
               }}
             >
-              确认处置方案 →
+              好的
             </button>
           </>
         )}
