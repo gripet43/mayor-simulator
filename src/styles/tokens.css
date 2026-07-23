@@ -1,0 +1,33 @@
+:root {
+  --bg-main: #F4F3EF;
+  --bg-card: #FFFFFF;
+  --bg-secondary: #EBEADF;
+  --bg-panel: #FAF9F5;
+
+  --text-main: #242424;
+  --text-sub: #6B6B66;
+  --text-muted: #8F8E88;
+
+  --color-red: #B7352C;
+  --color-yellow: #B98425;
+  --color-green: #2F7657;
+  --color-blue: #3D6F91;
+  --color-cyan: #3A8175;
+  --color-orange: #B8642B;
+
+  --border-color: #D8D5CE;
+  --border-strong: #A8A59C;
+
+  --font-serif: 'Noto Serif SC', serif;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-modal: 0 8px 30px rgba(0,0,0,0.2);
+
+  --nav-height: 64px;
+}
