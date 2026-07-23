@@ -203,7 +203,7 @@ export const DecisionPage: React.FC<Props> = ({
             <CheckCircle2 size={12} color={draft ? "#2E7D32" : "#999999"} />
             <span>
               {draftPolicy
-                ? `本季拟定: 【${draftPolicy.name}】`
+                ? `本季拟定: 【${draftPolicy.name}】(${draft?.intensity === "pilot" ? "试点投入" : draft?.intensity === "intensive" ? "攻坚投入" : "全市推行"})`
                 : draft?.type === "repay"
                 ? "本季拟定: 【休整并优先偿还债务】"
                 : draft?.type === "skip"

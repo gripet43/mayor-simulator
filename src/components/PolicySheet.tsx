@@ -13,7 +13,12 @@ interface Props {
 }
 
 export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirmApprove }) => {
-  const [selectedIntensity, setSelectedIntensity] = useState<Intensity>("full");
+  const draft = state.draftAction;
+  const isCurrentDraft = draft?.type === "policy" && draft.policyId === policy.id;
+
+  const [selectedIntensity, setSelectedIntensity] = useState<Intensity>(
+    isCurrentDraft && draft?.intensity ? draft.intensity : "full"
+  );
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   const intensities: { id: Intensity; label: string }[] = [
@@ -82,7 +87,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
         {/* Dynamic Detail & Funding Source Card */}
         <div className="card" style={{ backgroundColor: "#FFF", padding: "12px", marginBottom: "12px" }}>
           <div style={{ fontSize: "12px", fontWeight: "bold", color: "var(--text-main)", marginBottom: "6px" }}>
-            💰 资金来源与本期财务变动
+            💰 投入规格: 【{config.label}】资金来源与财税变动
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", fontSize: "12px", marginBottom: "8px" }}>
@@ -118,7 +123,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
 
           {notes.length > 0 && (
             <div style={{ fontSize: "11px", color: "#664D03", backgroundColor: "#FEF7E6", padding: "6px", borderRadius: "4px", marginTop: "8px" }}>
-              {notes.map((n, idx) => <div key={idx}>✨ {n}</div>)}
+              💡 {notes.join("；")}
             </div>
           )}
         </div>
@@ -137,11 +142,22 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
           </button>
         ) : (
           <button
-            className="btn btn-primary"
-            style={{ width: "100%", height: "46px", fontSize: "15px" }}
-            onClick={() => setShowConfirm(true)}
+            className={`btn ${isCurrentDraft && draft.intensity === selectedIntensity ? "btn-secondary" : "btn-primary"}`}
+            style={{
+              width: "100%",
+              height: "46px",
+              fontSize: "14px",
+              backgroundColor: isCurrentDraft && draft.intensity === selectedIntensity ? "#2E7D32" : undefined,
+              color: isCurrentDraft && draft.intensity === selectedIntensity ? "#FFFFFF" : undefined
+            }}
+            onClick={() => {
+              onConfirmApprove(policy.id, selectedIntensity);
+              onClose();
+            }}
           >
-            {newBorrowing > 0 ? `拟定为本季草案 · 新增借债 ${newBorrowing} 亿` : "拟定为本季草案 · 无需借债"}
+            {isCurrentDraft && draft.intensity === selectedIntensity
+              ? `已拟定为本季草案 (${config.label} · 首期 ${firstPay} 亿) ✓`
+              : `拟定为本季草案 (${config.label} · 首期 ${firstPay} 亿) →`}
           </button>
         )}
 

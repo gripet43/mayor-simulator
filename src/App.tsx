@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GameState, EventRecord, PolicyDefinition } from "./types/game";
+import { GameState, EventRecord, PolicyDefinition, Intensity } from "./types/game";
 import { createNewGame, completeQuarterStep, approvePolicyAction, skipQuarterAction, setDraftAction, executeQuarterResolution } from "./engine/gameEngine";
 import { loadGameState, saveGameState, clearSaveGame } from "./storage/saveGame";
 
@@ -65,8 +65,8 @@ export const App: React.FC = () => {
     setSelectedPolicy(policy);
   };
 
-  const handleConfirmApprovePolicy = (policyId: string) => {
-    setGameState(setDraftAction(gameState, { type: "policy", policyId }));
+  const handleConfirmApprovePolicy = (policyId: string, intensity: Intensity) => {
+    setGameState(setDraftAction(gameState, { type: "policy", policyId, intensity }));
     setSelectedPolicy(null);
   };
 

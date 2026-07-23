@@ -799,7 +799,7 @@ export function executeQuarterResolution(state: GameState): { nextState: GameSta
   const draft = state.draftAction;
 
   if (draft && draft.type === "policy" && draft.policyId) {
-    const res = approvePolicyAction(state, draft.policyId, "full");
+    const res = approvePolicyAction(state, draft.policyId, draft.intensity ?? "full");
     return {
       nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
       summary: res.summary

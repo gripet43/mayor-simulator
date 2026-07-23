@@ -361,6 +361,7 @@ export interface RepaymentRecord {
 export interface DraftAction {
   type: "policy" | "skip" | "repay";
   policyId?: string;
+  intensity?: Intensity;
   prioritizeRepay?: boolean;
 }
 
