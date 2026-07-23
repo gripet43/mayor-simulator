@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNextQuarter }) => {
-  const [phase, setPhase] = useState<"signing" | "simulating" | "report">("signing");
+  const [phase, setPhase] = useState<"simulating" | "report">("simulating");
   const [revealedStepCount, setRevealedStepCount] = useState<number>(1);
 
   useEffect(() => {
@@ -61,55 +61,6 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   };
 
   const steps = getSimulationSteps();
-  const draftTitle = summary.draftPolicyName
-    ? `《关于第 ${summary.quarter} 季度【${summary.draftPolicyName}】批复的决定》`
-    : summary.executedDraft?.type === "repay"
-    ? `《关于第 ${summary.quarter} 季度【优先偿还债务】的决定》`
-    : `《关于第 ${summary.quarter} 季度【暂缓投资周转】的决定》`;
-
-  if (phase === "signing") {
-    return (
-      <div className="modal-overlay">
-        <div className="modal-center" style={{ maxWidth: "400px", textAlign: "center", backgroundColor: "#FFFDF6", border: "2px solid #B7352C", padding: "24px 18px", boxShadow: "0 8px 32px rgba(183,53,44,0.2)" }}>
-          <div style={{ fontSize: "11px", color: "#B7352C", fontWeight: "bold", letterSpacing: "2px", marginBottom: "4px" }}>
-            🏛️ 临州市人民政府 · 行政批复
-          </div>
-          <div style={{ fontSize: "11px", color: "#8E8E93", marginBottom: "14px" }}>
-            临政发〔2026〕第 {summary.quarter < 10 ? `0${summary.quarter}` : summary.quarter} 号
-          </div>
-
-          <h3 style={{ fontSize: "15px", color: "#1C1C1E", marginBottom: "16px", lineHeight: "1.5", fontFamily: "var(--font-serif)" }}>
-            {draftTitle}
-          </h3>
-
-          <div style={{ margin: "18px 0" }}>
-            <span className="stamp-seal">
-              ★ 准予立项盖章 ★
-            </span>
-          </div>
-
-          <button
-            className="btn"
-            style={{
-              width: "100%",
-              height: "40px",
-              marginTop: "16px",
-              backgroundColor: "#B7352C",
-              color: "#FFF",
-              fontWeight: "bold",
-              fontSize: "14px",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer"
-            }}
-            onClick={() => setPhase("simulating")}
-          >
-            下一步：划拨资金与城市推演 →
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   if (phase === "simulating") {
     return (
