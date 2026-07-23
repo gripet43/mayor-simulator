@@ -9,8 +9,8 @@ import {
   resolveOpportunityResultTier
 } from "../engine/cityOpportunity";
 import { POLICIES_DATA, computeDirectInitiationCost, computeInstallments } from "../data/policiesData";
-import { approvePolicyAction } from "../engine/gameEngine";
-import { Search, HardHat } from "lucide-react";
+import { setDraftAction } from "../engine/gameEngine";
+import { Search, HardHat, CheckCircle2 } from "lucide-react";
 
 interface Props {
   state: GameState;
@@ -80,12 +80,8 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
   };
 
   const handleDirectInitiate = (policyId: string) => {
-    try {
-      const { nextState } = approvePolicyAction(state, policyId, "full", true);
-      onUpdateState(nextState);
-    } catch (err: any) {
-      alert(err.message || "主动立项失败");
-    }
+    onUpdateState(setDraftAction(state, { type: "policy", policyId }));
+    onClose();
   };
 
   return (
@@ -202,12 +198,14 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
 
               const canInitiate = !state.actionUsedThisQuarter && !activeProj && !isCompleted;
 
+              const isDraft = state.draftAction?.type === "policy" && state.draftAction?.policyId === def.id;
+
               return (
                 <div
                   key={sp.id}
                   style={{
-                    backgroundColor: "#FFF",
-                    border: "1px solid var(--border-color)",
+                    backgroundColor: isDraft ? "#F4F9F4" : "#FFF",
+                    border: isDraft ? "2px solid #2E7D32" : "1px solid var(--border-color)",
                     borderRadius: "6px",
                     padding: "8px 10px",
                     fontSize: "12px"
@@ -226,15 +224,22 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
 
                   {canInitiate ? (
                     <button
-                      className="btn btn-primary"
-                      style={{ width: "100%", height: "32px", fontSize: "12px", padding: "0" }}
+                      className={`btn ${isDraft ? "btn-secondary" : "btn-primary"}`}
+                      style={{
+                        width: "100%",
+                        height: "32px",
+                        fontSize: "12px",
+                        padding: "0",
+                        backgroundColor: isDraft ? "#2E7D32" : undefined,
+                        color: isDraft ? "#FFFFFF" : undefined
+                      }}
                       onClick={() => handleDirectInitiate(def.id)}
                     >
-                      主动立项 (首期 {firstPay} 亿) →
+                      {isDraft ? `已拟定为本季草案 (首期 ${firstPay} 亿) ✓` : `拟定为本季草案 (首期 ${firstPay} 亿)`}
                     </button>
                   ) : (
                     <div style={{ fontSize: "11px", color: "var(--text-sub)", fontStyle: "italic", textAlign: "right" }}>
-                      {state.actionUsedThisQuarter ? "本季度政策行动已使用" : "工程已在建或已完工"}
+                      {activeProj || isCompleted ? "工程已在建或已完工" : "本季度已选择其他草案"}
                     </div>
                   )}
                 </div>
