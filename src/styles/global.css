@@ -188,18 +188,18 @@ html, body {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(3px);
-  z-index: 1000;
+  z-index: 9999;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-top: calc(env(safe-area-inset-top, 20px) + 24px);
+  padding-top: calc(env(safe-area-inset-top, 20px) + 54px);
   animation: fadeIn 0.2s ease-out;
 }
 
 .modal-sheet {
   width: 100%;
   max-width: 480px;
-  max-height: calc(85vh - env(safe-area-inset-top, 16px));
+  max-height: calc(100vh - env(safe-area-inset-top, 20px) - 64px);
   background-color: var(--bg-main);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
@@ -210,13 +210,14 @@ html, body {
   display: flex;
   flex-direction: column;
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 .modal-center {
   width: calc(100% - 28px);
   max-width: 440px;
   margin: auto;
-  max-height: calc(82vh - env(safe-area-inset-top, 16px));
+  max-height: calc(100vh - env(safe-area-inset-top, 20px) - 80px);
   background-color: var(--bg-main);
   border-radius: var(--radius-lg);
   padding: 18px 16px;

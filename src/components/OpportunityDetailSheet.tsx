@@ -87,43 +87,57 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-        {/* Drag Handle Bar */}
+        {/* Sticky Header Box */}
         <div style={{
-          width: "36px",
-          height: "4px",
-          backgroundColor: "#D1D1D6",
-          borderRadius: "2px",
-          margin: "0 auto 10px auto",
-          flexShrink: 0
-        }} />
+          position: "sticky",
+          top: "-12px",
+          backgroundColor: "var(--bg-main)",
+          zIndex: 10,
+          paddingTop: "8px",
+          paddingBottom: "8px",
+          marginTop: "-12px",
+          borderBottom: "1px solid var(--border-color)",
+          marginBottom: "10px"
+        }}>
+          {/* Drag Handle Bar */}
+          <div style={{
+            width: "36px",
+            height: "4px",
+            backgroundColor: "#D1D1D6",
+            borderRadius: "2px",
+            margin: "0 auto 8px auto",
+            flexShrink: 0
+          }} />
 
-        {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-          <div>
-            <span className="badge badge-yellow" style={{ marginBottom: "4px", display: "inline-block" }}>重大城市机遇</span>
-            <h2 style={{ fontSize: "18px", lineHeight: "1.3" }}>{oppDef.name}</h2>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <span className="badge badge-yellow" style={{ marginBottom: "2px", display: "inline-block", fontSize: "11px" }}>重大城市机遇</span>
+              <h2 style={{ fontSize: "17px", lineHeight: "1.3" }}>{oppDef.name}</h2>
+            </div>
+            <button
+              onClick={onClose}
+              style={{
+                background: "#E5E5EA",
+                border: "none",
+                borderRadius: "50%",
+                width: "36px",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                color: "#1C1C1E",
+                marginLeft: "12px",
+                flexShrink: 0,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.12)"
+              }}
+            >
+              ✕
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            style={{
-              background: "#E5E5EA",
-              border: "none",
-              borderRadius: "50%",
-              width: "30px",
-              height: "30px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "14px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              color: "#636366",
-              marginLeft: "12px",
-              flexShrink: 0
-            }}
-          >
-            ✕
-          </button>
         </div>
 
         {/* Reachability Forecast Header Card */}
