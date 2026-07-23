@@ -87,18 +87,8 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-        {/* Sticky Header Box */}
-        <div style={{
-          position: "sticky",
-          top: "-12px",
-          backgroundColor: "var(--bg-main)",
-          zIndex: 10,
-          paddingTop: "8px",
-          paddingBottom: "8px",
-          marginTop: "-12px",
-          borderBottom: "1px solid var(--border-color)",
-          marginBottom: "10px"
-        }}>
+        {/* Fixed Top Header Box */}
+        <div className="modal-sheet-header">
           {/* Drag Handle Bar */}
           <div style={{
             width: "36px",
@@ -109,7 +99,7 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
             flexShrink: 0
           }} />
 
-          {/* Header */}
+          {/* Header Title & Close Button */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <span className="badge badge-yellow" style={{ marginBottom: "2px", display: "inline-block", fontSize: "11px" }}>重大城市机遇</span>
@@ -121,8 +111,8 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
                 background: "#E5E5EA",
                 border: "none",
                 borderRadius: "50%",
-                width: "36px",
-                height: "36px",
+                width: "34px",
+                height: "34px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -139,6 +129,9 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
             </button>
           </div>
         </div>
+
+        {/* Scrollable Content Body */}
+        <div className="modal-sheet-body">
 
         {/* Reachability Forecast Header Card */}
         <div className="card" style={{ padding: "12px", backgroundColor: "#FFF", marginBottom: "10px" }}>
@@ -331,6 +324,7 @@ export const OpportunityDetailSheet: React.FC<Props> = ({ state, onClose, onUpda
         <button className="btn btn-primary" style={{ width: "100%", height: "42px", fontSize: "14px", marginBottom: "16px" }} onClick={onClose}>
           确定
         </button>
+        </div>
       </div>
     </div>
   );

@@ -51,18 +51,8 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-        {/* Sticky Header Box */}
-        <div style={{
-          position: "sticky",
-          top: "-12px",
-          backgroundColor: "var(--bg-main)",
-          zIndex: 10,
-          paddingTop: "8px",
-          paddingBottom: "8px",
-          marginTop: "-12px",
-          borderBottom: "1px solid var(--border-color)",
-          marginBottom: "10px"
-        }}>
+        {/* Fixed Top Header Box */}
+        <div className="modal-sheet-header">
           {/* Drag Handle Bar */}
           <div style={{
             width: "36px",
@@ -73,7 +63,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
             flexShrink: 0
           }} />
 
-          {/* Header */}
+          {/* Header Title & Close Button */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <h2 style={{ fontSize: "17px", lineHeight: "1.3" }}>{policy.name}</h2>
@@ -87,8 +77,8 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
                 background: "#E5E5EA",
                 border: "none",
                 borderRadius: "50%",
-                width: "36px",
-                height: "36px",
+                width: "34px",
+                height: "34px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -105,6 +95,9 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
             </button>
           </div>
         </div>
+
+        {/* Scrollable Content Body */}
+        <div className="modal-sheet-body">
 
         <p style={{ fontSize: "13px", color: "var(--text-sub)", marginBottom: "12px" }}>
           {policy.description}
@@ -246,6 +239,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

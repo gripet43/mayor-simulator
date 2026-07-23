@@ -190,38 +190,53 @@ html, body {
   backdrop-filter: blur(3px);
   z-index: 9999;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-top: calc(env(safe-area-inset-top, 20px) + 54px);
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
   animation: fadeIn 0.2s ease-out;
 }
 
 .modal-sheet {
   width: 100%;
   max-width: 480px;
-  max-height: calc(100vh - env(safe-area-inset-top, 20px) - 64px);
+  max-height: calc(85vh - env(safe-area-inset-top, 0px));
   background-color: var(--bg-main);
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
-  padding: 12px 16px calc(24px + env(safe-area-inset-bottom, 16px)) 16px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  box-shadow: var(--shadow-modal);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-modal);
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
+}
+
+.modal-sheet-header {
+  flex-shrink: 0;
+  padding: 10px 16px 8px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-main);
+}
+
+.modal-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom, 16px)) 16px;
 }
 
 .modal-center {
   width: calc(100% - 28px);
   max-width: 440px;
   margin: auto;
-  max-height: calc(100vh - env(safe-area-inset-top, 20px) - 80px);
+  max-height: 80vh;
   background-color: var(--bg-main);
   border-radius: var(--radius-lg);
   padding: 18px 16px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   box-shadow: var(--shadow-modal);
   animation: scaleIn 0.2s ease-out;
 }
