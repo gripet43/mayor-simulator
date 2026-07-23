@@ -3,6 +3,7 @@ import { computeInstallments, POLICIES_DATA } from "../data/policiesData";
 import { deriveOpportunitySeed } from "../engine/cityOpportunity";
 import { MAJOR_OPPORTUNITIES_DATA } from "../data/majorOpportunitiesData";
 import { PRNG } from "../engine/prng";
+import { syncMajorOpportunityRotation } from "../engine/gameEngine";
 
 const SAVE_KEY = "mayor_simulator_save_v1";
 
@@ -150,5 +151,5 @@ export function migrateSaveData(save: any): GameState {
   }
 
   save.saveVersion = 4;
-  return save as GameState;
+  return syncMajorOpportunityRotation(save as GameState);
 }

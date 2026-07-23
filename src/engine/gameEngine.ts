@@ -722,40 +722,8 @@ export function completeQuarterStep(state: GameState): GameState {
   // Reset quarterly action allowance
   nextState.actionUsedThisQuarter = false;
 
-  // Check if a new follow-up major opportunity should trigger
-  const activeCurrentOpp = nextState.activeMajorOpportunityId
-    ? nextState.opportunityStates[nextState.activeMajorOpportunityId]
-    : null;
-
-  const isCurrentActiveDone = !activeCurrentOpp || activeCurrentOpp.status === "settled";
-
-  if (isCurrentActiveDone && nextState.quarter >= nextState.nextOpportunityStartQuarter) {
-    // Find next unstarted opportunity in followUpOpportunityOrder
-    const unstartedId = (nextState.followUpOpportunityOrder ?? []).find(
-      (id) => !nextState.opportunityStates[id] || nextState.opportunityStates[id].status === "announced" && nextState.opportunityStates[id].settledQuarter === undefined
-    );
-
-    if (unstartedId && !nextState.opportunityStates[unstartedId]) {
-      const oppDef = MAJOR_OPPORTUNITIES_DATA[unstartedId];
-      if (oppDef) {
-        const newOppState: CityOpportunityState = {
-          id: unstartedId,
-          title: oppDef.name,
-          startQuarter: nextState.quarter,
-          settleQuarter: nextState.quarter + 3,
-          hasResearched: false,
-          status: "announced",
-          opportunitySynergyIds: []
-        };
-        nextState.opportunityStates = {
-          ...nextState.opportunityStates,
-          [unstartedId]: newOppState
-        };
-        nextState.activeMajorOpportunityId = unstartedId;
-        nextState.cityOpportunityState = newOppState;
-      }
-    }
-  }
+  // Automatically sync/rotate major city opportunities
+  nextState = syncMajorOpportunityRotation(nextState);
 
   // Reset turn transient debt metrics
   nextState.openingDebtThisQuarter = nextState.debt;
@@ -852,5 +820,51 @@ export function executeQuarterResolution(state: GameState): { nextState: GameSta
     nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
     summary: res.summary
   };
+}
+
+export function syncMajorOpportunityRotation(state: GameState): GameState {
+  let nextState = { ...state };
+  if (!nextState.opportunityStates) nextState.opportunityStates = {};
+  if (!nextState.followUpOpportunityOrder) {
+    nextState.followUpOpportunityOrder = ["freight_hub", "regional_medical", "cultural_expo"];
+  }
+
+  const activeOppId = nextState.activeMajorOpportunityId;
+  const activeOpp = activeOppId ? nextState.opportunityStates[activeOppId] : null;
+
+  const isCurrentActiveDone = !activeOpp || activeOpp.status === "settled";
+  const startQuarterTarget = nextState.nextOpportunityStartQuarter ?? 8;
+
+  if (isCurrentActiveDone && nextState.quarter >= startQuarterTarget) {
+    // 寻找下一个未结算 (status !== "settled") 的机遇
+    const unstartedId = nextState.followUpOpportunityOrder.find(
+      (id) => !nextState.opportunityStates[id] || nextState.opportunityStates[id].status !== "settled"
+    );
+
+    if (unstartedId) {
+      const oppDef = MAJOR_OPPORTUNITIES_DATA[unstartedId];
+      if (oppDef) {
+        const existingState = nextState.opportunityStates[unstartedId];
+        const startQ = Math.max(startQuarterTarget, nextState.quarter);
+        const newOppState: CityOpportunityState = {
+          id: unstartedId,
+          title: oppDef.name,
+          startQuarter: startQ,
+          settleQuarter: startQ + 3,
+          hasResearched: existingState?.hasResearched ?? false,
+          status: "announced",
+          opportunitySynergyIds: existingState?.opportunitySynergyIds ?? []
+        };
+        nextState.opportunityStates = {
+          ...nextState.opportunityStates,
+          [unstartedId]: newOppState
+        };
+        nextState.activeMajorOpportunityId = unstartedId;
+        nextState.cityOpportunityState = newOppState;
+      }
+    }
+  }
+
+  return nextState;
 }
 
