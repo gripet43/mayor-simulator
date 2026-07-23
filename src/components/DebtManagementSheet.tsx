@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GameState } from "../types/game";
 import { calculateDebtInterest, calculateRecurringBalance, getDebtInterestRate, repayDebtAction } from "../engine/finance";
+import { round1Dec, formatDeltaVal } from "../utils/format";
 import { Coins, AlertOctagon, ArrowRight, ShieldAlert } from "lucide-react";
 
 interface Props {
@@ -112,10 +113,10 @@ export const DebtManagementSheet: React.FC<Props> = ({ state, onClose, onUpdateS
             <div>下季度预计利息: <strong>{nextInterest} 亿元</strong></div>
             <div>可用财政余额: <strong style={{ color: "#B98425" }}>{state.treasury} 亿元</strong></div>
             <div>
-              经常性结余:{" "}
-              <span className={`badge ${recBalance.statusBadgeClass}`}>
-                {recBalance.recurringBalance >= 0 ? `+${recBalance.recurringBalance}` : recBalance.recurringBalance} 亿 ({recBalance.statusText})
-              </span>
+              <div>本季经常性收支净额:</div>
+              <div style={{ color: recBalance.recurringBalance >= 0 ? "var(--color-green)" : "var(--color-red)", fontWeight: "bold" }}>
+                {formatDeltaVal(recBalance.recurringBalance, true)} ({recBalance.statusText})
+              </div>
             </div>
           </div>
 
@@ -134,27 +135,27 @@ export const DebtManagementSheet: React.FC<Props> = ({ state, onClose, onUpdateS
           <div style={{ fontSize: "12px", display: "flex", flexDirection: "column", gap: "3px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span>期初债务:</span>
-              <span>{openingDebt} 亿元</span>
+              <span>{round1Dec(openingDebt)} 亿元</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: policyBorrowing > 0 ? "var(--color-red)" : "var(--text-sub)" }}>
               <span>政策资金缺口 (借贷):</span>
-              <span>+{policyBorrowing} 亿元</span>
+              <span>+{round1Dec(policyBorrowing)} 亿元</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: deficitBorrowing > 0 ? "var(--color-red)" : "var(--text-sub)" }}>
               <span>经常性财政缺口:</span>
-              <span>+{deficitBorrowing} 亿元</span>
+              <span>+{round1Dec(deficitBorrowing)} 亿元</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: eventBorrowing > 0 ? "var(--color-red)" : "var(--text-sub)" }}>
               <span>事件融资借款:</span>
-              <span>+{eventBorrowing} 亿元</span>
+              <span>+{round1Dec(eventBorrowing)} 亿元</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", color: voluntaryRepayment > 0 ? "var(--color-green)" : "var(--text-sub)" }}>
               <span>本季主动偿还:</span>
-              <span>-{voluntaryRepayment} 亿元</span>
+              <span>-{round1Dec(voluntaryRepayment)} 亿元</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold", borderTop: "1px dashed var(--border-color)", paddingTop: "4px", marginTop: "2px" }}>
               <span>预计期末债务:</span>
-              <span>{projectedEndingDebt} 亿元</span>
+              <span>{round1Dec(projectedEndingDebt)} 亿元</span>
             </div>
           </div>
         </div>
@@ -230,9 +231,9 @@ export const DebtManagementSheet: React.FC<Props> = ({ state, onClose, onUpdateS
               </p>
 
               <div style={{ backgroundColor: "#FAF9F5", padding: "10px", borderRadius: "6px", fontSize: "12px", marginBottom: "14px", display: "flex", flexDirection: "column", gap: "4px" }}>
-                <div>财政: {state.treasury}亿 &rarr; <strong>{state.treasury - pendingRepayAmount}亿</strong></div>
-                <div>债务: {state.debt}亿 &rarr; <strong>{state.debt - pendingRepayAmount}亿</strong></div>
-                <div>下季度预计利息: <strong>{calculateDebtInterest(state.debt - pendingRepayAmount)} 亿元</strong></div>
+                <div>财政: {round1Dec(state.treasury)}亿 &rarr; <strong>{round1Dec(state.treasury - pendingRepayAmount)}亿</strong></div>
+                <div>债务: {round1Dec(state.debt)}亿 &rarr; <strong>{round1Dec(state.debt - pendingRepayAmount)}亿</strong></div>
+                <div>下季度预计利息: <strong>{round1Dec(calculateDebtInterest(state.debt - pendingRepayAmount))} 亿元</strong></div>
               </div>
 
               {state.treasury - pendingRepayAmount === 0 && (

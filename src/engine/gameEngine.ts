@@ -419,14 +419,14 @@ function advanceQuarterFlow(
 
   const rawMaintenance = calculateCompletedMaintenance(nextState);
   const maintenanceDiscount = calculateDigitalGovMaintenanceDiscount(nextState);
-  const maintenanceExpense = Math.max(0, rawMaintenance - maintenanceDiscount);
+  const maintenanceExpense = Math.round(Math.max(0, rawMaintenance - maintenanceDiscount) * 10) / 10;
   const opportunityOperatingCosts = nextState.permanentOpportunityOperatingCosts ?? 0;
 
   const isDigitalGovDone = nextState.completedPolicyIds.includes("digital_government");
   const baseExpense = isDigitalGovDone ? 3 : 4;
   const debtInterest = calculateDebtInterest(nextState.debt);
-  const necessaryExpense = baseExpense + maintenanceExpense + opportunityOperatingCosts + debtInterest;
-  const totalQuarterRevenue = taxInfo.taxIncome + operatingIncomeTotal;
+  const necessaryExpense = Math.round((baseExpense + maintenanceExpense + opportunityOperatingCosts + debtInterest) * 10) / 10;
+  const totalQuarterRevenue = Math.round((taxInfo.taxIncome + operatingIncomeTotal) * 10) / 10;
 
   // Add revenue to treasury
   nextState.treasury = Math.round((nextState.treasury + totalQuarterRevenue) * 10) / 10;
@@ -617,17 +617,17 @@ function advanceQuarterFlow(
   const policyBorrowing = state.policyBorrowingThisQuarter ?? 0;
   const eventBorrowing = state.eventBorrowingThisQuarter ?? 0;
   const voluntaryRepayment = state.voluntaryRepaymentThisQuarter ?? 0;
-  const netChange = nextState.debt - openingDebt;
+  const netChange = Math.round((nextState.debt - openingDebt) * 10) / 10;
 
   let explanation = "";
   if (netChange > 0) {
     if (policyBorrowing > 0) {
       explanation = `本季度债务增加 ${netChange} 亿元，主要原因是工程建设与政策投入超过可用财政。`;
     } else {
-      explanation = `本季度未批准新项目，但维护费 (${maintenanceExpense}亿)、机遇运营费 (${opportunityOperatingCosts}亿) 与债务利息 (${debtInterest}亿) 造成 ${debtAddedFromDeficit} 亿元经常性财政赤字。`;
+      explanation = `本季度未批准新项目，但维护费 (${Math.round(maintenanceExpense * 10) / 10}亿)、机遇运营费 (${Math.round(opportunityOperatingCosts * 10) / 10}亿) 与债务利息 (${Math.round(debtInterest * 10) / 10}亿) 造成 ${Math.round(debtAddedFromDeficit * 10) / 10} 亿元经常性财政赤字。`;
     }
   } else if (netChange < 0) {
-    explanation = `本季度债务净减少 ${Math.abs(netChange)} 亿元，财政运行平稳并进行了主动偿债。`;
+    explanation = `本季度债务净减少 ${Math.round(Math.abs(netChange) * 10) / 10} 亿元，财政运行平稳并进行了主动偿债。`;
   } else {
     explanation = "本季度收支平衡，债务未发生变化。";
   }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { QuarterSummaryData } from "../types/game";
+import { formatDeltaVal, round1Dec } from "../utils/format";
 import { Coins, CheckCircle2, TrendingUp, Newspaper, BookOpen, HardHat, Zap, FileCheck } from "lucide-react";
 
 interface Props {
@@ -148,60 +149,60 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
 
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
             <span>经济基础税收:</span>
-            <span style={{ color: "var(--color-green)", fontWeight: "bold" }}>+{f.taxBaseEconomy} 亿</span>
+            <span style={{ color: "var(--color-green)", fontWeight: "bold" }}>+{round1Dec(f.taxBaseEconomy)} 亿</span>
           </div>
 
           {f.industrialTaxBase > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "#B98425", fontWeight: "bold" }}>
               <span>永久产业税基加成:</span>
-              <span>+{f.industrialTaxBase} 亿</span>
+              <span>+{round1Dec(f.industrialTaxBase)} 亿</span>
             </div>
           )}
 
           {f.temporaryTaxBonus > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "var(--color-blue)" }}>
               <span>临时建设期税收加成:</span>
-              <span>+{f.temporaryTaxBonus} 亿</span>
+              <span>+{round1Dec(f.temporaryTaxBonus)} 亿</span>
             </div>
           )}
 
           {f.operatingIncomeTotal > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "var(--color-green)" }}>
               <span>已完工项目运营收益:</span>
-              <span>+{f.operatingIncomeTotal} 亿</span>
+              <span>+{round1Dec(f.operatingIncomeTotal)} 亿</span>
             </div>
           )}
 
           {grantIncome > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "#2E7D32", fontWeight: "bold" }}>
               <span>🏛️ 城市机遇专项上级扶持金:</span>
-              <span>+{grantIncome} 亿</span>
+              <span>+{round1Dec(grantIncome)} 亿</span>
             </div>
           )}
 
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", borderTop: "1px dashed var(--border-color)", paddingTop: "3px" }}>
             <span>基础公共支出:</span>
-            <span style={{ color: "var(--color-red)" }}>-{f.baseExpense} 亿</span>
+            <span style={{ color: "var(--color-red)" }}>-{round1Dec(f.baseExpense)} 亿</span>
           </div>
 
           {f.maintenanceExpense > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
               <span>已完工项目维护费:</span>
-              <span style={{ color: "var(--color-red)" }}>-{f.maintenanceExpense} 亿</span>
+              <span style={{ color: "var(--color-red)" }}>-{round1Dec(f.maintenanceExpense)} 亿</span>
             </div>
           )}
 
           {f.opportunityOperatingCosts > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
               <span>重大机遇运营成本:</span>
-              <span style={{ color: "var(--color-red)" }}>-{f.opportunityOperatingCosts} 亿</span>
+              <span style={{ color: "var(--color-red)" }}>-{round1Dec(f.opportunityOperatingCosts)} 亿</span>
             </div>
           )}
 
           {f.debtInterest > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
               <span>债务利息支出 (6%年化):</span>
-              <span style={{ color: "var(--color-red)" }}>-{f.debtInterest} 亿</span>
+              <span style={{ color: "var(--color-red)" }}>-{round1Dec(f.debtInterest)} 亿</span>
             </div>
           )}
 

@@ -15,7 +15,8 @@ export function calculateDebtInterest(debt: number): number {
 }
 
 export function calculateCompletedMaintenance(state: GameState): number {
-  return state.completedPolicies.reduce((sum, p: any) => sum + (p.maintenanceCost ?? 0), 0);
+  const sum = state.completedPolicies.reduce((acc, p: any) => acc + (p.maintenanceCost ?? 0), 0);
+  return Math.round(sum * 10) / 10;
 }
 
 export function calculateCompletedOperatingIncome(state: GameState): number {
@@ -26,7 +27,7 @@ export function calculateCompletedOperatingIncome(state: GameState): number {
       totalIncome += 1;
     }
   });
-  return totalIncome;
+  return Math.round(totalIncome * 10) / 10;
 }
 
 export function calculateQuarterTax(state: GameState): {
@@ -88,7 +89,7 @@ export function calculateRecurringBalance(state: GameState): RecurringBalanceBre
   const operatingIncome = calculateCompletedOperatingIncome(state);
   const rawMaintenance = calculateCompletedMaintenance(state);
   const maintenanceDiscount = calculateDigitalGovMaintenanceDiscount(state);
-  const maintenanceExpense = Math.max(0, rawMaintenance - maintenanceDiscount);
+  const maintenanceExpense = Math.round(Math.max(0, rawMaintenance - maintenanceDiscount) * 10) / 10;
   const opportunityOperatingCosts = state.permanentOpportunityOperatingCosts ?? 0;
 
   const isDigitalGovDone = state.completedPolicyIds.includes("digital_government");
