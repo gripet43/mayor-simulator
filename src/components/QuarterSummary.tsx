@@ -13,6 +13,10 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   const m = summary.metricChanges;
   const dl = f.debtLedger;
 
+  const totalIncome = Math.round((f.taxIncome + (f.operatingIncomeTotal ?? 0)) * 10) / 10;
+  const totalExpense = Math.round((f.baseExpense + f.maintenanceExpense + (f.opportunityOperatingCosts ?? 0) + f.debtInterest) * 10) / 10;
+  const netBalance = Math.round((totalIncome - totalExpense) * 10) / 10;
+
   return (
     <div className="modal-overlay">
       <div className="modal-center" style={{ maxWidth: "440px" }}>
@@ -48,6 +52,13 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             </div>
           )}
 
+          {f.operatingIncomeTotal > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", color: "var(--color-green)" }}>
+              <span>已完工项目运营收益:</span>
+              <span>+{f.operatingIncomeTotal} 亿</span>
+            </div>
+          )}
+
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0", borderTop: "1px dashed var(--border-color)", paddingTop: "3px" }}>
             <span>基础公共支出:</span>
             <span style={{ color: "var(--color-red)" }}>-{f.baseExpense} 亿</span>
@@ -60,12 +71,39 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             </div>
           )}
 
+          {f.opportunityOperatingCosts > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
+              <span>重大机遇运营成本:</span>
+              <span style={{ color: "var(--color-red)" }}>-{f.opportunityOperatingCosts} 亿</span>
+            </div>
+          )}
+
           {f.debtInterest > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", margin: "2px 0" }}>
               <span>债务利息支出 (6%年化):</span>
               <span style={{ color: "var(--color-red)" }}>-{f.debtInterest} 亿</span>
             </div>
           )}
+
+          {/* Net Result Highlight Summary Line */}
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontSize: "13px",
+            fontWeight: "bold",
+            margin: "6px 0 0 0",
+            borderTop: "2px solid var(--border-color)",
+            paddingTop: "6px",
+            backgroundColor: netBalance >= 0 ? "#F4F9F4" : "#FDF2F2",
+            padding: "6px 8px",
+            borderRadius: "4px"
+          }}>
+            <span>本季经常性收支净额:</span>
+            <span style={{ color: netBalance >= 0 ? "#2E7D32" : "#C62828", fontSize: "14px", fontFamily: "var(--font-serif)" }}>
+              {netBalance >= 0 ? `+${netBalance} 亿元 (盈余)` : `${netBalance} 亿元 (赤字)`}
+            </span>
+          </div>
         </div>
 
         {/* Project & Opportunity Progress Notices */}
