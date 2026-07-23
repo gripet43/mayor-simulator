@@ -10,6 +10,19 @@ interface Props {
 
 export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNextQuarter }) => {
   const [phase, setPhase] = useState<"signing" | "simulating" | "report">("signing");
+  const [revealedStepCount, setRevealedStepCount] = useState<number>(1);
+
+  useEffect(() => {
+    if (phase === "simulating") {
+      setRevealedStepCount(1);
+      const t1 = setTimeout(() => setRevealedStepCount(2), 320);
+      const t2 = setTimeout(() => setRevealedStepCount(3), 640);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [phase]);
 
   const f = summary.finance;
   const m = summary.metricChanges;
@@ -18,6 +31,41 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   const totalIncome = Math.round((f.taxIncome + (f.operatingIncomeTotal ?? 0)) * 10) / 10;
   const totalExpense = Math.round((f.baseExpense + f.maintenanceExpense + (f.opportunityOperatingCosts ?? 0) + f.debtInterest) * 10) / 10;
   const netBalance = Math.round((totalIncome - totalExpense) * 10) / 10;
+
+  const getSimulationSteps = () => {
+    const draft = summary.executedDraft;
+    const policyName = summary.draftPolicyName || "拟定项目";
+    const intensityLabel = draft?.intensity === "pilot" ? "试点" : draft?.intensity === "intensive" ? "攻坚" : "全市推行";
+
+    if (draft?.type === "policy") {
+      return [
+        { icon: <Coins size={15} color="#B98425" />, text: `划拨【${policyName}】(${intensityLabel}) 首期建设款` },
+        { icon: <HardHat size={15} color="#2E7D32" />, text: `招投标完成，施工团队进场推进建设进度` },
+        { icon: <TrendingUp size={15} color="#0277BD" />, text: `结算经常性财税、产业税基与城投利息...` }
+      ];
+    }
+
+    if (draft?.type === "repay") {
+      return [
+        { icon: <Coins size={15} color="#2E7D32" />, text: `调配 5.0 亿元财政专款，划拨城投偿债账户` },
+        { icon: <CheckCircle2 size={15} color="#2E7D32" />, text: `成功偿还部分债务，有效降低后续利息负担` },
+        { icon: <TrendingUp size={15} color="#0277BD" />, text: `结算经常性财税账目，编印《临州纪事》头条...` }
+      ];
+    }
+
+    return [
+      { icon: <BookOpen size={15} color="#8E8E93" />, text: `暂缓新项目立项，保留财政资金用于周转` },
+      { icon: <CheckCircle2 size={15} color="#8E8E93" />, text: `维持现有城投基础设施平稳运行与基本开支` },
+      { icon: <TrendingUp size={15} color="#0277BD" />, text: `结算经常性财税账目，编印《临州纪事》头条...` }
+    ];
+  };
+
+  const steps = getSimulationSteps();
+  const draftTitle = summary.draftPolicyName
+    ? `《关于第 ${summary.quarter} 季度【${summary.draftPolicyName}】批复的决定》`
+    : summary.executedDraft?.type === "repay"
+    ? `《关于第 ${summary.quarter} 季度【优先偿还债务】的决定》`
+    : `《关于第 ${summary.quarter} 季度【暂缓投资周转】的决定》`;
 
   if (phase === "signing") {
     return (
@@ -30,8 +78,8 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             临政发〔2026〕第 {summary.quarter < 10 ? `0${summary.quarter}` : summary.quarter} 号
           </div>
 
-          <h3 style={{ fontSize: "16px", color: "#1C1C1E", marginBottom: "16px", lineHeight: "1.5", fontFamily: "var(--font-serif)" }}>
-            《关于第 {summary.quarter} 季度施政草案落地与财政拨付的决定》
+          <h3 style={{ fontSize: "15px", color: "#1C1C1E", marginBottom: "16px", lineHeight: "1.5", fontFamily: "var(--font-serif)" }}>
+            {draftTitle}
           </h3>
 
           <div style={{ margin: "18px 0" }}>
@@ -71,20 +119,38 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
             ⚙️ 正在推演第 {summary.quarter} 季度城市运转...
           </div>
 
-          <div style={{ fontSize: "12px", color: "var(--text-sub)", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px", textAlign: "left" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Coins size={15} color="#B98425" /> 划拨工程分期首付款及招投标预算...
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <TrendingUp size={15} color="#2E7D32" /> 结算经常性税收、营运收益与债务利息...
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Newspaper size={15} color="#0277BD" /> 编印《临州纪事》本季头条专稿...
-            </div>
+          <div style={{ fontSize: "12px", color: "var(--text-sub)", display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px", textAlign: "left", minHeight: "110px" }}>
+            {steps.map((s, idx) => {
+              const isVisible = revealedStepCount >= idx + 1;
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    opacity: isVisible ? 1 : 0.15,
+                    transform: isVisible ? "translateY(0)" : "translateY(4px)",
+                    transition: "all 0.3s ease-out"
+                  }}
+                >
+                  <div style={{ minWidth: "16px" }}>{s.icon}</div>
+                  <span style={{ fontWeight: isVisible ? "bold" : "normal", color: isVisible ? "#1C1C1E" : "#8E8E93" }}>
+                    {s.text}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           <div style={{ height: "6px", backgroundColor: "#E5E5EA", borderRadius: "3px", overflow: "hidden", marginBottom: "16px" }}>
-            <div style={{ width: "100%", height: "100%", backgroundColor: "#B98425", borderRadius: "3px" }} />
+            <div style={{
+              width: `${(revealedStepCount / 3) * 100}%`,
+              height: "100%",
+              backgroundColor: "#B98425",
+              borderRadius: "3px",
+              transition: "width 0.3s ease-out"
+            }} />
           </div>
 
           <button

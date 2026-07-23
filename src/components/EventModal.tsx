@@ -151,7 +151,7 @@ export const EventModal: React.FC<Props> = ({ activeEvent, state, onResolve }) =
                 }
               }}
             >
-              查看季度总结 &gt;
+              确认处置方案 →
             </button>
           </>
         )}

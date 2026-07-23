@@ -798,27 +798,30 @@ export function setDraftAction(state: GameState, draft: DraftAction | undefined)
 export function executeQuarterResolution(state: GameState): { nextState: GameState; summary: QuarterSummaryData } {
   const draft = state.draftAction;
 
+  let policyName = "";
   if (draft && draft.type === "policy" && draft.policyId) {
-    const res = approvePolicyAction(state, draft.policyId, draft.intensity ?? "full");
-    return {
-      nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
-      summary: res.summary
-    };
+    const p = POLICIES_DATA.find((item) => item.id === draft.policyId);
+    policyName = p?.name ?? "";
   }
 
-  if (draft && draft.type === "repay") {
-    const res = skipQuarterAction(state, true);
-    return {
-      nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
-      summary: res.summary
-    };
+  let res: { nextState: GameState; summary: QuarterSummaryData };
+  if (draft && draft.type === "policy" && draft.policyId) {
+    res = approvePolicyAction(state, draft.policyId, draft.intensity ?? "full");
+  } else if (draft && draft.type === "repay") {
+    res = skipQuarterAction(state, true);
+  } else {
+    res = skipQuarterAction(state, false);
   }
 
-  // Default skip/no draft
-  const res = skipQuarterAction(state, false);
+  const finalSummary: QuarterSummaryData = {
+    ...res.summary,
+    executedDraft: draft,
+    draftPolicyName: policyName
+  };
+
   return {
-    nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
-    summary: res.summary
+    nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: finalSummary },
+    summary: finalSummary
   };
 }
 

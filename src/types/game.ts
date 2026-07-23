@@ -247,6 +247,8 @@ export interface QuarterSummaryData {
   eventRecord?: EventRecord;
   metricChanges: Partial<MetricDelta>;
   newsHeadline: string;
+  executedDraft?: DraftAction;
+  draftPolicyName?: string;
 }
 
 export type BidTier = "none" | "conservative" | "standard" | "full";
