@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ActiveEvent, EventOption, EventRecord, GameState } from "../types/game";
 import { PRNG } from "../engine/prng";
 import { resolveEventOptionSelection } from "../engine/events";
-import { formatEffectsMap } from "../utils/format";
+import { formatEffectsMapDetailed } from "../utils/format";
 
 interface Props {
   activeEvent: ActiveEvent;
@@ -23,8 +23,8 @@ export const EventModal: React.FC<Props> = ({ activeEvent, state, onResolve }) =
     setNextGameState(nextState);
   };
 
-  const effectsFormatted = resultRecord ? formatEffectsMap(resultRecord.effects) : [];
-  const hasNoEffects = resultRecord ? resultRecord.costPaid === 0 && effectsFormatted.length === 0 : false;
+  const detailedEffects = resultRecord ? formatEffectsMapDetailed(resultRecord.effects) : [];
+  const hasNoEffects = resultRecord ? resultRecord.costPaid === 0 && detailedEffects.length === 0 : false;
 
   return (
     <div className="modal-overlay">
@@ -96,7 +96,7 @@ export const EventModal: React.FC<Props> = ({ activeEvent, state, onResolve }) =
           <>
             <div style={{ textAlign: "center", marginBottom: "12px" }}>
               <span className={`badge ${resultRecord.isSuccess ? "badge-green" : "badge-red"}`} style={{ fontSize: "14px", padding: "4px 12px" }}>
-                {resultRecord.isSuccess ? "✅ 处理成功" : "❌ 方案受挫"}
+                {resultRecord.isSuccess ? "✅ 处置完毕" : "❌ 方案受挫"}
               </span>
             </div>
 
@@ -129,9 +129,9 @@ export const EventModal: React.FC<Props> = ({ activeEvent, state, onResolve }) =
                 </div>
               )}
 
-              {effectsFormatted.map((text, idx) => (
-                <div key={idx} style={{ fontSize: "13px", margin: "3px 0", color: text.includes("+") ? "var(--color-green)" : "var(--color-red)", fontWeight: "500" }}>
-                  {text}
+              {detailedEffects.map((item, idx) => (
+                <div key={idx} style={{ fontSize: "13px", margin: "3px 0", color: item.isPositive ? "var(--color-green)" : "var(--color-red)", fontWeight: "500" }}>
+                  {item.text}
                 </div>
               ))}
 

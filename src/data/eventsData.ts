@@ -457,13 +457,15 @@ export const EVENTS_DATA: EventDefinition[] = [
         label: "紧急排涝",
         cost: 6,
         description: "支付 6 亿强抽排涝与救灾。（防灾能力>=50时损失微弱）",
-        successEffects: {} // Dynamic calculated in engine
+        successEffects: {}, // Dynamic calculated in engine
+        successLog: "已动员紧急防汛排涝，成功控制并消退积水，避免灾情升级为重大险情！"
       },
       {
         id: "opt_traffic_first",
         label: "先恢复交通",
         description: "不做全面救灾，优先打通主干路。",
-        successEffects: { debt: 8, livelihood: -6, morale: -8 }
+        successEffects: { debt: 8, livelihood: -6, morale: -8 },
+        successLog: "优先移走倒塌落木与故障车辆，主干道交通恢复基本通行。"
       },
       {
         id: "opt_gamble",
