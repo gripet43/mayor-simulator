@@ -8,9 +8,10 @@ import { Zap, AlertCircle, Calendar } from "lucide-react";
 interface Props {
   state: GameState;
   onUpdateState: (nextState: GameState) => void;
+  onOpenDetail?: () => void;
 }
 
-export const OpportunityEntryCard: React.FC<Props> = ({ state, onUpdateState }) => {
+export const OpportunityEntryCard: React.FC<Props> = ({ state, onUpdateState, onOpenDetail }) => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const activeOppId = state.activeMajorOpportunityId ?? "new_energy_base";
@@ -34,11 +35,19 @@ export const OpportunityEntryCard: React.FC<Props> = ({ state, onUpdateState }) 
 
   const nextOppDef = nextOppId ? MAJOR_OPPORTUNITIES_DATA[nextOppId] : null;
 
+  const handleCardClick = () => {
+    if (onOpenDetail) {
+      onOpenDetail();
+    } else {
+      setShowDetail(true);
+    }
+  };
+
   return (
     <>
       <div
         className="card"
-        onClick={() => setShowDetail(true)}
+        onClick={handleCardClick}
         style={{
           backgroundColor: "#FFFDF6",
           borderColor: "#F6E2B3",
@@ -116,7 +125,7 @@ export const OpportunityEntryCard: React.FC<Props> = ({ state, onUpdateState }) 
         )}
       </div>
 
-      {showDetail && (
+      {!onOpenDetail && showDetail && (
         <OpportunityDetailSheet
           state={state}
           onClose={() => setShowDetail(false)}

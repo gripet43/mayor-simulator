@@ -4,6 +4,7 @@ import { HeaderStatus } from "../components/HeaderStatus";
 import { MetricGrid } from "../components/MetricGrid";
 import { MarqueeNewsTicker } from "../components/MarqueeNewsTicker";
 import { OpportunityEntryCard } from "../components/OpportunityEntryCard";
+import { OpportunityDetailSheet } from "../components/OpportunityDetailSheet";
 import { PolicyCard } from "../components/PolicyCard";
 import { DebtManagementSheet } from "../components/DebtManagementSheet";
 import { POLICIES_DATA } from "../data/policiesData";
@@ -32,6 +33,7 @@ export const DecisionPage: React.FC<Props> = ({
   onOpenHelp
 }) => {
   const [showDebtSheet, setShowDebtSheet] = useState<boolean>(false);
+  const [showOpportunitySheet, setShowOpportunitySheet] = useState<boolean>(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
@@ -90,7 +92,11 @@ export const DecisionPage: React.FC<Props> = ({
         <MarqueeNewsTicker state={state} />
 
         {/* New Energy Opportunity Entry Card (Q2+) */}
-        <OpportunityEntryCard state={state} onUpdateState={onUpdateState} />
+        <OpportunityEntryCard
+          state={state}
+          onUpdateState={onUpdateState}
+          onOpenDetail={() => setShowOpportunitySheet(true)}
+        />
 
         {/* Active Construction Projects Bar (if any) */}
         {state.activeProjects.length > 0 && (
@@ -287,6 +293,15 @@ export const DecisionPage: React.FC<Props> = ({
           onUpdateState={(nextState) => {
             onUpdateState(nextState);
           }}
+        />
+      )}
+
+      {/* Opportunity Detail Sheet */}
+      {showOpportunitySheet && (
+        <OpportunityDetailSheet
+          state={state}
+          onClose={() => setShowOpportunitySheet(false)}
+          onUpdateState={onUpdateState}
         />
       )}
     </div>
