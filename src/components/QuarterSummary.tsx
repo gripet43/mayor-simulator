@@ -15,8 +15,8 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
   useEffect(() => {
     if (phase === "simulating") {
       setRevealedStepCount(1);
-      const t1 = setTimeout(() => setRevealedStepCount(2), 320);
-      const t2 = setTimeout(() => setRevealedStepCount(3), 640);
+      const t1 = setTimeout(() => setRevealedStepCount(2), 800);
+      const t2 = setTimeout(() => setRevealedStepCount(3), 1600);
       return () => {
         clearTimeout(t1);
         clearTimeout(t2);
@@ -82,7 +82,7 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
                     gap: "8px",
                     opacity: isVisible ? 1 : 0.15,
                     transform: isVisible ? "translateY(0)" : "translateY(4px)",
-                    transition: "all 0.3s ease-out"
+                    transition: "all 0.5s ease-out"
                   }}
                 >
                   <div style={{ minWidth: "16px" }}>{s.icon}</div>
@@ -100,7 +100,7 @@ export const QuarterSummary: React.FC<Props> = ({ summary, isLastQuarter, onNext
               height: "100%",
               backgroundColor: "#B98425",
               borderRadius: "3px",
-              transition: "width 0.3s ease-out"
+              transition: "width 0.5s ease-out"
             }} />
           </div>
 
