@@ -210,14 +210,14 @@ export const DecisionPage: React.FC<Props> = ({
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
           <div style={{ fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}>
             <CheckCircle2 size={13} color={draft ? "#2E7D32" : "#8E8E93"} />
-            <span style={{ fontWeight: draft ? "bold" : "normal", color: draft ? "#1C1C1E" : "#636366" }}>
+            <span style={{ fontWeight: draft ? "bold" : "normal", color: draft ? "#1C1C1E" : "#8E8E93" }}>
               {draftPolicy
                 ? `本季拟定: 【${draftPolicy.name}】(${draft?.intensity === "pilot" ? "试点投入" : draft?.intensity === "intensive" ? "攻坚投入" : "全市推行"})`
                 : draft?.type === "repay"
                 ? "本季拟定: 【优先偿还债务】"
                 : draft?.type === "skip"
                 ? "本季拟定: 【暂缓投资，周转财政】"
-                : "本季草案: 未拟定 (默认暂缓周转)"}
+                : "请添加要执行的草案"}
             </span>
           </div>
 
@@ -245,6 +245,7 @@ export const DecisionPage: React.FC<Props> = ({
 
         <button
           className="btn"
+          disabled={!draft}
           style={{
             width: "100%",
             height: "42px",
@@ -254,18 +255,19 @@ export const DecisionPage: React.FC<Props> = ({
             justifyContent: "center",
             alignItems: "center",
             gap: "6px",
-            backgroundColor: draft ? "#B98425" : "#8E8E93",
+            backgroundColor: draft ? "#B98425" : "#A1A1AA",
             color: "#FFFFFF",
             border: "none",
             borderRadius: "6px",
             boxShadow: draft ? "0 2px 10px rgba(185,132,37,0.35)" : "none",
             transition: "all 0.2s ease",
-            cursor: "pointer"
+            cursor: draft ? "pointer" : "not-allowed",
+            opacity: draft ? 1 : 0.7
           }}
-          onClick={onExecuteResolution}
+          onClick={draft ? onExecuteResolution : undefined}
         >
-          <span>{draft ? "提交本季方案" : "暂缓周转并提交"}</span>
-          <ArrowRight size={16} />
+          <span>{draft ? "提交本季方案" : "请添加要执行的草案"}</span>
+          <ArrowRight size={16} color={draft ? "#FFF" : "rgba(255,255,255,0.6)"} />
         </button>
       </div>
 
