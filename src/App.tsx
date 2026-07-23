@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GameState, EventRecord, PolicyDefinition } from "./types/game";
-import { createNewGame, completeQuarterStep, approvePolicyAction, skipQuarterAction } from "./engine/gameEngine";
+import { createNewGame, completeQuarterStep, approvePolicyAction, skipQuarterAction, setDraftAction, executeQuarterResolution } from "./engine/gameEngine";
 import { loadGameState, saveGameState, clearSaveGame } from "./storage/saveGame";
 
 import { StartPage } from "./pages/StartPage";
@@ -46,17 +46,15 @@ export const App: React.FC = () => {
   };
 
   const handleContinueGame = () => {
-    const saved = loadGameState();
-    if (saved) {
-      setGameState(saved);
-    }
     setShowStartPage(false);
-    setActiveTab("decision");
   };
 
   const handleRestartGame = () => {
     clearSaveGame();
-    setShowStartPage(true);
+    const newGame = createNewGame();
+    setGameState(newGame);
+    setShowStartPage(false);
+    setActiveTab("decision");
   };
 
   const handleUpdateGameState = (nextState: GameState) => {
@@ -67,22 +65,21 @@ export const App: React.FC = () => {
     setSelectedPolicy(policy);
   };
 
-  const handleConfirmApprovePolicy = (policyId: string, intensity: any) => {
-    try {
-      const { nextState } = approvePolicyAction(gameState, policyId, intensity, false);
-      setGameState(nextState);
-      setSelectedPolicy(null);
-    } catch (err: any) {
-      alert(err.message || "政策批准失败");
-    }
+  const handleConfirmApprovePolicy = (policyId: string) => {
+    setGameState(setDraftAction(gameState, { type: "policy", policyId }));
+    setSelectedPolicy(null);
   };
 
   const handleSkipQuarter = (prioritizeRepay?: boolean) => {
+    setGameState(setDraftAction(gameState, { type: prioritizeRepay ? "repay" : "skip" }));
+  };
+
+  const handleExecuteResolution = () => {
     try {
-      const { nextState } = skipQuarterAction(gameState, prioritizeRepay);
+      const { nextState } = executeQuarterResolution(gameState);
       setGameState(nextState);
     } catch (err: any) {
-      alert(err.message || "暂缓失败");
+      alert(err.message || "季度结算失败");
     }
   };
 
@@ -125,7 +122,7 @@ export const App: React.FC = () => {
               <DecisionPage
                 state={gameState}
                 onSelectPolicyCard={handleSelectPolicyCard}
-                onSkipQuarter={handleSkipQuarter}
+                onExecuteResolution={handleExecuteResolution}
                 onUpdateState={handleUpdateGameState}
                 onOpenHelp={() => setShowHelp(true)}
               />

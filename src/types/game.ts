@@ -358,6 +358,12 @@ export interface RepaymentRecord {
   postDebt: number;
 }
 
+export interface DraftAction {
+  type: "policy" | "skip" | "repay";
+  policyId?: string;
+  prioritizeRepay?: boolean;
+}
+
 export interface GameState {
   version: 1;
   saveVersion: 4;
@@ -366,6 +372,7 @@ export interface GameState {
   quarter: number;
 
   actionUsedThisQuarter: boolean;
+  draftAction?: DraftAction;
 
   // Standard Metrics
   treasury: number;

@@ -133,7 +133,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
         {/* Single Main Action Button with Dynamic Label */}
         {exceedsLimit ? (
           <button className="btn btn-disabled" disabled style={{ width: "100%", height: "46px", fontSize: "13px" }}>
-            无法批准：执行后债务将达到 {postDebt} 亿，超过财政托管线
+            无法拟定：执行后债务将达到 {postDebt} 亿，超过财政托管线
           </button>
         ) : (
           <button
@@ -141,7 +141,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
             style={{ width: "100%", height: "46px", fontSize: "15px" }}
             onClick={() => setShowConfirm(true)}
           >
-            {newBorrowing > 0 ? `批准方案 · 新增借债 ${newBorrowing} 亿` : "批准方案 · 无需借债"}
+            {newBorrowing > 0 ? `拟定为本季草案 · 新增借债 ${newBorrowing} 亿` : "拟定为本季草案 · 无需借债"}
           </button>
         )}
 
@@ -149,16 +149,16 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
         {showConfirm && (
           <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
             <div className="modal-center" onClick={(e) => e.stopPropagation()}>
-              <h3 style={{ marginBottom: "8px" }}>确认批准政策</h3>
+              <h3 style={{ marginBottom: "8px" }}>确认拟定本季草案</h3>
               <p style={{ fontSize: "13px", color: "var(--text-main)", marginBottom: "14px", lineHeight: "1.6" }}>
-                确定批准“<strong>{policy.name}</strong>”并采用“<strong>{config.label}</strong>”方案吗？
+                确定将“<strong>{policy.name}</strong>”（<strong>{config.label}</strong>）加入本季施政草案吗？
                 <br /><br />
-                本期首付款将从财政余额支出 <strong>{useTreasury} 亿元</strong>
+                提交本季方案后，本期首付款将从财政余额支出 <strong>{useTreasury} 亿元</strong>
                 {newBorrowing > 0 ? `，并产生 **${newBorrowing} 亿元** 新增城投借债` : "，无需新增借债"}。
               </p>
               <div style={{ display: "flex", gap: "10px" }}>
                 <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowConfirm(false)}>
-                  取消
+                  返回
                 </button>
                 <button
                   className="btn btn-primary"
@@ -168,7 +168,7 @@ export const PolicySheet: React.FC<Props> = ({ policy, state, onClose, onConfirm
                     onConfirmApprove(policy.id, selectedIntensity);
                   }}
                 >
-                  批准执行
+                  确定拟定草案
                 </button>
               </div>
             </div>

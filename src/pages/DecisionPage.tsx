@@ -8,17 +8,24 @@ import { PolicyCard } from "../components/PolicyCard";
 import { DebtManagementSheet } from "../components/DebtManagementSheet";
 import { POLICIES_DATA } from "../data/policiesData";
 import { calculateRecurringBalance } from "../engine/finance";
-import { HardHat } from "lucide-react";
+import { setDraftAction } from "../engine/gameEngine";
+import { HardHat, CheckCircle2, ArrowRight, RotateCcw, AlertTriangle } from "lucide-react";
 
 interface Props {
   state: GameState;
   onSelectPolicyCard: (policy: PolicyDefinition) => void;
-  onSkipQuarter: (prioritizeRepay?: boolean) => void;
+  onExecuteResolution: () => void;
   onUpdateState: (nextState: GameState) => void;
   onOpenHelp: () => void;
 }
 
-export const DecisionPage: React.FC<Props> = ({ state, onSelectPolicyCard, onSkipQuarter, onUpdateState, onOpenHelp }) => {
+export const DecisionPage: React.FC<Props> = ({
+  state,
+  onSelectPolicyCard,
+  onExecuteResolution,
+  onUpdateState,
+  onOpenHelp
+}) => {
   const [showDebtSheet, setShowDebtSheet] = useState<boolean>(false);
 
   const candidateDefs = state.candidatePolicies
@@ -26,6 +33,22 @@ export const DecisionPage: React.FC<Props> = ({ state, onSelectPolicyCard, onSki
     .filter(Boolean) as PolicyDefinition[];
 
   const recBalance = calculateRecurringBalance(state);
+
+  const draft = state.draftAction;
+  const draftPolicy = draft?.type === "policy" && draft.policyId ? POLICIES_DATA.find(p => p.id === draft.policyId) : null;
+
+  const handleSelectPolicyAsDraft = (policy: PolicyDefinition) => {
+    if (draft?.type === "policy" && draft.policyId === policy.id) {
+      // Toggle off draft if clicked again
+      onUpdateState(setDraftAction(state, undefined));
+    } else {
+      onUpdateState(setDraftAction(state, { type: "policy", policyId: policy.id }));
+    }
+  };
+
+  const handleSelectSkipDraft = (prioritizeRepay: boolean) => {
+    onUpdateState(setDraftAction(state, { type: prioritizeRepay ? "repay" : "skip" }));
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -40,7 +63,7 @@ export const DecisionPage: React.FC<Props> = ({ state, onSelectPolicyCard, onSki
         className="page-content"
         style={{
           padding: "8px 10px",
-          paddingBottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 60px)"
+          paddingBottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 90px)"
         }}
       >
         {/* Compact Metric Strip */}
@@ -82,27 +105,33 @@ export const DecisionPage: React.FC<Props> = ({ state, onSelectPolicyCard, onSki
         {/* Policy Candidate Cards Section */}
         <div style={{ marginBottom: "8px" }}>
           <div style={{ fontSize: "13px", fontWeight: "bold", color: "var(--text-main)", marginBottom: "4px", fontFamily: "var(--font-serif)" }}>
-            本季度政策提案 (选择审批一项)
+            本季度政策提案 (选择拟定一项草案)
           </div>
 
           {candidateDefs.length === 0 ? (
             <div className="card" style={{ textAlign: "center", color: "var(--text-sub)", padding: "14px" }}>
-              本季度暂无合适投资政策，请选择暂缓本季度。
+              本季度暂无合适投资政策，请拟定暂缓本季度草案。
             </div>
           ) : (
             candidateDefs.map((policy) => (
-              <PolicyCard key={policy.id} policy={policy} state={state} onSelect={onSelectPolicyCard} />
+              <PolicyCard key={policy.id} policy={policy} state={state} onSelect={handleSelectPolicyAsDraft} />
             ))
           )}
         </div>
 
         {/* Permanent Skip Investment Card */}
-        <div className="card" style={{ padding: "10px", backgroundColor: "#FAF9F5", marginBottom: "16px" }}>
+        <div className="card" style={{
+          padding: "10px",
+          backgroundColor: draft?.type === "skip" || draft?.type === "repay" ? "#F4F9F4" : "#FAF9F5",
+          borderColor: draft?.type === "skip" || draft?.type === "repay" ? "#2E7D32" : "var(--border-color)",
+          borderWidth: draft?.type === "skip" || draft?.type === "repay" ? "2px" : "1px",
+          marginBottom: "16px"
+        }}>
           <div style={{ fontSize: "12px", fontWeight: "bold", color: "var(--text-main)", marginBottom: "2px" }}>
-            暂缓本季度投资
+            休整或暂缓投资草案
           </div>
           <p style={{ fontSize: "11px", color: "var(--text-sub)", marginBottom: "8px" }}>
-            不批准新项目，保留财政用于周转或偿还城投债务。
+            不批准新项目，保留财政用于周转或优先偿还城投债务。
           </p>
 
           {recBalance.isStructuralDeficit && (
@@ -113,24 +142,104 @@ export const DecisionPage: React.FC<Props> = ({ state, onSelectPolicyCard, onSki
 
           <div style={{ display: "flex", gap: "8px" }}>
             <button
-              className="btn btn-secondary"
-              style={{ flex: 1, height: "36px", fontSize: "12px" }}
-              onClick={() => onSkipQuarter(false)}
+              className={`btn ${draft?.type === "skip" ? "btn-secondary" : "btn-outline"}`}
+              style={{
+                flex: 1,
+                height: "36px",
+                fontSize: "12px",
+                backgroundColor: draft?.type === "skip" ? "#2E7D32" : undefined,
+                color: draft?.type === "skip" ? "#FFFFFF" : undefined
+              }}
+              onClick={() => handleSelectSkipDraft(false)}
             >
-              暂缓投资，进入结算
+              {draft?.type === "skip" ? "已拟定: 暂缓投资 ✓" : "拟定: 暂缓投资"}
             </button>
 
             {state.treasury > 5 && state.debt > 0 && (
               <button
-                className="btn btn-outline"
-                style={{ flex: 1, height: "36px", fontSize: "12px" }}
-                onClick={() => onSkipQuarter(true)}
+                className={`btn ${draft?.type === "repay" ? "btn-secondary" : "btn-outline"}`}
+                style={{
+                  flex: 1,
+                  height: "36px",
+                  fontSize: "12px",
+                  backgroundColor: draft?.type === "repay" ? "#2E7D32" : undefined,
+                  color: draft?.type === "repay" ? "#FFFFFF" : undefined
+                }}
+                onClick={() => handleSelectSkipDraft(true)}
               >
-                休整并优先偿债 ({state.treasury - 5}亿)
+                {draft?.type === "repay" ? `已拟定: 优先偿债 ✓` : `拟定: 优先偿债 (${state.treasury - 5}亿)`}
               </button>
             )}
           </div>
         </div>
+      </div>
+
+      {/* Turn Submission Dock (Fixed at Bottom above BottomNav) */}
+      <div style={{
+        position: "fixed",
+        bottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px))",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "100%",
+        maxWidth: "480px",
+        backgroundColor: "#FFFFFF",
+        borderTop: "1px solid var(--border-color)",
+        padding: "8px 12px",
+        boxShadow: "0 -4px 12px rgba(0,0,0,0.08)",
+        zIndex: 90
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+          <div style={{ fontSize: "11px", color: "var(--text-sub)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <CheckCircle2 size={12} color={draft ? "#2E7D32" : "#999999"} />
+            <span>
+              {draftPolicy
+                ? `本季拟定: 【${draftPolicy.name}】`
+                : draft?.type === "repay"
+                ? "本季拟定: 【休整并优先偿还债务】"
+                : draft?.type === "skip"
+                ? "本季拟定: 【暂缓投资，周转财政】"
+                : "本季草案: 未拟定 (默认暂缓投资)"}
+            </span>
+          </div>
+
+          {draft && (
+            <button
+              onClick={() => onUpdateState(setDraftAction(state, undefined))}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: "11px",
+                color: "var(--color-red)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+                padding: 0
+              }}
+            >
+              <RotateCcw size={10} /> 撤回草案
+            </button>
+          )}
+        </div>
+
+        <button
+          className="btn btn-primary"
+          style={{
+            width: "100%",
+            height: "40px",
+            fontSize: "14px",
+            fontWeight: "bold",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "6px",
+            backgroundColor: "#B98425"
+          }}
+          onClick={onExecuteResolution}
+        >
+          <span>提交本季施政方案 (开启第 {state.quarter} 季结算)</span>
+          <ArrowRight size={16} />
+        </button>
       </div>
 
       {/* Debt Management Sheet */}

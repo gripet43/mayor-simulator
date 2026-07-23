@@ -3,6 +3,7 @@ import {
   ActiveProject,
   ChronicleEntry,
   CityOpportunityState,
+  DraftAction,
   EventRecord,
   GameState,
   Intensity,
@@ -815,3 +816,38 @@ function generateQuarterNewsHeadline(state: GameState, completedNames: string[])
   }
   return `临州市五年规划稳步推进，各项经济与民生建设平稳运行。`;
 }
+
+export function setDraftAction(state: GameState, draft: DraftAction | undefined): GameState {
+  return {
+    ...state,
+    draftAction: draft
+  };
+}
+
+export function executeQuarterResolution(state: GameState): { nextState: GameState; summary: QuarterSummaryData } {
+  const draft = state.draftAction;
+
+  if (draft && draft.type === "policy" && draft.policyId) {
+    const res = approvePolicyAction(state, draft.policyId, "full");
+    return {
+      nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
+      summary: res.summary
+    };
+  }
+
+  if (draft && draft.type === "repay") {
+    const res = skipQuarterAction(state, true);
+    return {
+      nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
+      summary: res.summary
+    };
+  }
+
+  // Default skip/no draft
+  const res = skipQuarterAction(state, false);
+  return {
+    nextState: { ...res.nextState, draftAction: undefined, lastQuarterSummary: res.summary },
+    summary: res.summary
+  };
+}
+
