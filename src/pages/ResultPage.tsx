@@ -1,7 +1,7 @@
 import React from "react";
 import { GameState } from "../types/game";
 import { calculateFinalScore, generateEndingSummaryText } from "../engine/scoring";
-import { getPolicyName } from "../utils/format";
+import { getPolicyName, formatDeltaVal, round1Dec } from "../utils/format";
 import { AlertOctagon, XCircle, CheckCircle2 } from "lucide-react";
 
 interface Props {
@@ -16,9 +16,9 @@ export const ResultPage: React.FC<Props> = ({ state, onRestart }) => {
 
   const isFiscalTakeover = state.endingId === "fiscal_takeover" || state.debt > 120;
 
-  // Compute last 4 quarters deficit total
+  // Compute last 4 quarters deficit total with rounding protection
   const recentHistory = state.quarterHistory.slice(-4);
-  const last4DeficitTotal = recentHistory.reduce((sum, q) => sum + (q.finance.debtAdded ?? 0), 0);
+  const last4DeficitTotal = round1Dec(recentHistory.reduce((sum, q) => sum + (q.finance.debtAdded ?? 0), 0));
 
   const topPolicies = Object.entries(state.policyUseCount)
     .sort((a, b) => b[1] - a[1])
@@ -67,7 +67,7 @@ export const ResultPage: React.FC<Props> = ({ state, onRestart }) => {
               <AlertOctagon size={14} /> 托管原因深度剖析：
             </div>
             <div>• 最终债务: <strong>{state.debt} 亿元</strong> (上限 120 亿)</div>
-            <div>• 任期债务净增: <strong>+{state.debt - 32} 亿元</strong></div>
+            <div>• 任期债务净增: <strong>{formatDeltaVal(state.debt - 32, true)}</strong></div>
             {last4DeficitTotal > 0 && <div>• 近 4 个季度经常性赤字累计: <strong>+{last4DeficitTotal} 亿元</strong></div>}
             <div>• 主要原因: 项目维护费与债务利息支出持续超过季度税收与运营收入。</div>
           </div>
@@ -135,43 +135,43 @@ export const ResultPage: React.FC<Props> = ({ state, onRestart }) => {
               <td style={{ padding: "4px", textAlign: "left" }}>可用财政</td>
               <td>48 亿</td>
               <td>{state.treasury} 亿</td>
-              <td style={{ color: state.treasury >= 48 ? "var(--color-green)" : "var(--color-red)" }}>{state.treasury - 48 >= 0 ? `+${state.treasury - 48}` : state.treasury - 48}</td>
+              <td style={{ color: state.treasury >= 48 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.treasury - 48, true)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>城市债务</td>
               <td>32 亿</td>
               <td>{state.debt} 亿</td>
-              <td style={{ color: state.debt <= 32 ? "var(--color-green)" : "var(--color-red)" }}>{state.debt - 32 >= 0 ? `+${state.debt - 32}` : state.debt - 32}</td>
+              <td style={{ color: state.debt <= 32 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.debt - 32, true)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>经济</td>
               <td>42</td>
               <td>{state.economy}</td>
-              <td style={{ color: state.economy >= 42 ? "var(--color-green)" : "var(--color-red)" }}>{state.economy - 42 >= 0 ? `+${state.economy - 42}` : state.economy - 42}</td>
+              <td style={{ color: state.economy >= 42 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.economy - 42)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>民生</td>
               <td>40</td>
               <td>{state.livelihood}</td>
-              <td style={{ color: state.livelihood >= 40 ? "var(--color-green)" : "var(--color-red)" }}>{state.livelihood - 40 >= 0 ? `+${state.livelihood - 40}` : state.livelihood - 40}</td>
+              <td style={{ color: state.livelihood >= 40 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.livelihood - 40)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>环境</td>
               <td>38</td>
               <td>{state.environment}</td>
-              <td style={{ color: state.environment >= 38 ? "var(--color-green)" : "var(--color-red)" }}>{state.environment - 38 >= 0 ? `+${state.environment - 38}` : state.environment - 38}</td>
+              <td style={{ color: state.environment >= 38 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.environment - 38)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>民心</td>
               <td>55</td>
               <td>{state.morale}</td>
-              <td style={{ color: state.morale >= 55 ? "var(--color-green)" : "var(--color-red)" }}>{state.morale - 55 >= 0 ? `+${state.morale - 55}` : state.morale - 55}</td>
+              <td style={{ color: state.morale >= 55 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.morale - 55)}</td>
             </tr>
             <tr>
               <td style={{ padding: "4px", textAlign: "left" }}>防灾能力</td>
               <td>20</td>
               <td>{state.resilience}</td>
-              <td style={{ color: state.resilience >= 20 ? "var(--color-green)" : "var(--color-red)" }}>{state.resilience - 20 >= 0 ? `+${state.resilience - 20}` : state.resilience - 20}</td>
+              <td style={{ color: state.resilience >= 20 ? "var(--color-green)" : "var(--color-red)" }}>{formatDeltaVal(state.resilience - 20)}</td>
             </tr>
           </tbody>
         </table>

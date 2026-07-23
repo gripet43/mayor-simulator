@@ -83,3 +83,14 @@ export function getPolicyName(policyId: string): string {
   const found = POLICIES_DATA.find((p) => p.id === policyId);
   return found ? found.name : policyId;
 }
+
+export function round1Dec(val: number): number {
+  return Math.round(val * 10) / 10;
+}
+
+export function formatDeltaVal(diff: number, isCurrency = false): string {
+  const rounded = round1Dec(diff);
+  const unit = isCurrency ? " 亿" : "";
+  if (rounded > 0) return `+${rounded}${unit}`;
+  return `${rounded}${unit}`;
+}
