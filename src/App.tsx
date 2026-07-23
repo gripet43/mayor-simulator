@@ -121,6 +121,8 @@ export const App: React.FC = () => {
             {activeTab === "decision" && (
               <DecisionPage
                 state={gameState}
+                currentTab={activeTab}
+                onSelectTab={setActiveTab}
                 onSelectPolicyCard={handleSelectPolicyCard}
                 onExecuteResolution={handleExecuteResolution}
                 onUpdateState={handleUpdateGameState}
@@ -131,6 +133,8 @@ export const App: React.FC = () => {
             {activeTab === "city" && (
               <CityPage
                 state={gameState}
+                currentTab={activeTab}
+                onSelectTab={setActiveTab}
                 onOpenHelp={() => setShowHelp(true)}
               />
             )}
@@ -138,16 +142,12 @@ export const App: React.FC = () => {
             {activeTab === "chronicle" && (
               <ChroniclePage
                 state={gameState}
+                currentTab={activeTab}
+                onSelectTab={setActiveTab}
                 onOpenHelp={() => setShowHelp(true)}
               />
             )}
           </div>
-
-          {/* Bottom Navigation */}
-          <BottomNav
-            currentTab={activeTab}
-            onSelectTab={setActiveTab}
-          />
 
           {/* Policy Sheet */}
           {selectedPolicy && (

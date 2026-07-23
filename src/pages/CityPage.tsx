@@ -9,12 +9,16 @@ import { getPolicyName } from "../utils/format";
 import { Zap, Coins, Building2, Award } from "lucide-react";
 import { MAJOR_OPPORTUNITIES_DATA } from "../data/majorOpportunitiesData";
 
+import { NavTab } from "../components/BottomNav";
+
 interface Props {
   state: GameState;
+  currentTab?: NavTab;
+  onSelectTab?: (tab: NavTab) => void;
   onOpenHelp: () => void;
 }
 
-export const CityPage: React.FC<Props> = ({ state, onOpenHelp }) => {
+export const CityPage: React.FC<Props> = ({ state, currentTab, onSelectTab, onOpenHelp }) => {
   const fiscalHealth = calculateFiscalHealth(state.treasury, state.debt);
   const activeLinkages = checkActiveLinkages(state);
   const { stage } = getCityStage(state);
@@ -28,7 +32,7 @@ export const CityPage: React.FC<Props> = ({ state, onOpenHelp }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <HeaderStatus state={state} onOpenHelp={onOpenHelp} />
+      <HeaderStatus state={state} currentTab={currentTab} onSelectTab={onSelectTab} onOpenHelp={onOpenHelp} />
 
       <div className="page-content">
         {/* 1. 五项城市指标与财政健康度 */}

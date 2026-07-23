@@ -10,9 +10,12 @@ import { POLICIES_DATA } from "../data/policiesData";
 import { calculateRecurringBalance } from "../engine/finance";
 import { setDraftAction } from "../engine/gameEngine";
 import { HardHat, CheckCircle2, ArrowRight, RotateCcw, AlertTriangle } from "lucide-react";
+import { NavTab } from "../components/BottomNav";
 
 interface Props {
   state: GameState;
+  currentTab?: NavTab;
+  onSelectTab?: (tab: NavTab) => void;
   onSelectPolicyCard: (policy: PolicyDefinition) => void;
   onExecuteResolution: () => void;
   onUpdateState: (nextState: GameState) => void;
@@ -21,6 +24,8 @@ interface Props {
 
 export const DecisionPage: React.FC<Props> = ({
   state,
+  currentTab,
+  onSelectTab,
   onSelectPolicyCard,
   onExecuteResolution,
   onUpdateState,
@@ -65,6 +70,8 @@ export const DecisionPage: React.FC<Props> = ({
       {/* Top Header with Debt Management Entry */}
       <HeaderStatus
         state={state}
+        currentTab={currentTab}
+        onSelectTab={onSelectTab}
         onOpenHelp={onOpenHelp}
         onOpenDebtManagement={() => setShowDebtSheet(true)}
       />
@@ -185,30 +192,32 @@ export const DecisionPage: React.FC<Props> = ({
       </div>
 
       {/* Turn Submission Dock (Fixed at Bottom above BottomNav) */}
+      {/* Bottom Floating Action Dock (Draft Cart) */}
       <div style={{
         position: "fixed",
-        bottom: "calc(var(--nav-height) + env(safe-area-inset-bottom, 0px))",
+        bottom: 0,
         left: "50%",
         transform: "translateX(-50%)",
         width: "100%",
         maxWidth: "480px",
-        backgroundColor: "#FFFFFF",
-        borderTop: "1px solid var(--border-color)",
-        padding: "8px 12px",
-        boxShadow: "0 -4px 12px rgba(0,0,0,0.08)",
-        zIndex: 90
+        backgroundColor: draft ? "#FFFDF6" : "#F4F4F5",
+        borderTop: draft ? "2px solid #B98425" : "1px solid #E4E4E7",
+        padding: "8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) 12px",
+        boxShadow: draft ? "0 -4px 16px rgba(185,132,37,0.18)" : "0 -2px 10px rgba(0,0,0,0.06)",
+        zIndex: 90,
+        transition: "all 0.2s ease"
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-          <div style={{ fontSize: "11px", color: "var(--text-sub)", display: "flex", alignItems: "center", gap: "4px" }}>
-            <CheckCircle2 size={12} color={draft ? "#2E7D32" : "#999999"} />
-            <span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+          <div style={{ fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}>
+            <CheckCircle2 size={13} color={draft ? "#2E7D32" : "#8E8E93"} />
+            <span style={{ fontWeight: draft ? "bold" : "normal", color: draft ? "#1C1C1E" : "#636366" }}>
               {draftPolicy
                 ? `本季拟定: 【${draftPolicy.name}】(${draft?.intensity === "pilot" ? "试点投入" : draft?.intensity === "intensive" ? "攻坚投入" : "全市推行"})`
                 : draft?.type === "repay"
-                ? "本季拟定: 【休整并优先偿还债务】"
+                ? "本季拟定: 【优先偿还债务】"
                 : draft?.type === "skip"
                 ? "本季拟定: 【暂缓投资，周转财政】"
-                : "本季草案: 未拟定 (默认暂缓投资)"}
+                : "本季草案: 未拟定 (默认暂缓周转)"}
             </span>
           </div>
 
@@ -219,12 +228,14 @@ export const DecisionPage: React.FC<Props> = ({
                 background: "none",
                 border: "none",
                 fontSize: "11px",
-                color: "var(--color-red)",
+                color: "#C62828",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 gap: "2px",
-                padding: 0
+                padding: "2px 6px",
+                borderRadius: "3px",
+                backgroundColor: "#FDE8E7"
               }}
             >
               <RotateCcw size={10} /> 撤回草案
@@ -233,21 +244,27 @@ export const DecisionPage: React.FC<Props> = ({
         </div>
 
         <button
-          className="btn btn-primary"
+          className="btn"
           style={{
             width: "100%",
-            height: "40px",
+            height: "42px",
             fontSize: "14px",
             fontWeight: "bold",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             gap: "6px",
-            backgroundColor: "#B98425"
+            backgroundColor: draft ? "#B98425" : "#8E8E93",
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: "6px",
+            boxShadow: draft ? "0 2px 10px rgba(185,132,37,0.35)" : "none",
+            transition: "all 0.2s ease",
+            cursor: "pointer"
           }}
           onClick={onExecuteResolution}
         >
-          <span>提交本季施政方案 (开启第 {state.quarter} 季结算)</span>
+          <span>{draft ? `提交本季方案 (开启第 ${state.quarter} 季结算)` : `未选草案：直接暂缓周转 (结算第 ${state.quarter} 季)`}</span>
           <ArrowRight size={16} />
         </button>
       </div>

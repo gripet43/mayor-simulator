@@ -2,15 +2,19 @@ import React from "react";
 import { GameState } from "../types/game";
 import { HeaderStatus } from "../components/HeaderStatus";
 
+import { NavTab } from "../components/BottomNav";
+
 interface Props {
   state: GameState;
+  currentTab?: NavTab;
+  onSelectTab?: (tab: NavTab) => void;
   onOpenHelp: () => void;
 }
 
-export const ChroniclePage: React.FC<Props> = ({ state, onOpenHelp }) => {
+export const ChroniclePage: React.FC<Props> = ({ state, currentTab, onSelectTab, onOpenHelp }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <HeaderStatus state={state} onOpenHelp={onOpenHelp} />
+      <HeaderStatus state={state} currentTab={currentTab} onSelectTab={onSelectTab} onOpenHelp={onOpenHelp} />
 
       <div className="page-content">
         <div style={{ fontSize: "16px", fontWeight: "bold", fontFamily: "var(--font-serif)", marginBottom: "12px" }}>
