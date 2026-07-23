@@ -49,7 +49,7 @@ export const MetricGrid: React.FC<Props> = ({ state, compact = true }) => {
 
   const renderDiff = (diff?: number) => {
     if (diff === undefined || diff === 0) return null;
-    if (diff > 0) return <span style={{ color: "var(--color-green)", fontSize: "11px", fontWeight: "bold" }}>+${diff}</span>;
+    if (diff > 0) return <span style={{ color: "var(--color-green)", fontSize: "11px", fontWeight: "bold" }}>+{diff}</span>;
     return <span style={{ color: "var(--color-red)", fontSize: "11px", fontWeight: "bold" }}>{diff}</span>;
   };
 
