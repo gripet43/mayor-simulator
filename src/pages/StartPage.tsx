@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useVisitorCount } from "../utils/visitorCounter";
 
 interface Props {
   hasSave: boolean;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const StartPage: React.FC<Props> = ({ hasSave, onStartNewGame, onContinueGame, onOpenHelp }) => {
+  const visitorCount = useVisitorCount();
   const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
   const [showFirstGuide, setShowFirstGuide] = useState(false);
 
@@ -102,8 +104,10 @@ export const StartPage: React.FC<Props> = ({ hasSave, onStartNewGame, onContinue
           规则说明
         </button>
 
-        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "10px" }}>
-          版本号 v1.0.0 · 纯前端离线单机
+        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+          <span>版本号 v1.0.0</span>
+          <span>·</span>
+          <span>本站总访问量 <strong style={{ color: "var(--text-sub)" }}>{visitorCount !== null ? `${visitorCount.toLocaleString()} 次` : "-- 次"}</strong></span>
         </div>
       </div>
 
